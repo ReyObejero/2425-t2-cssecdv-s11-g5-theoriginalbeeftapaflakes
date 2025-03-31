@@ -5,7 +5,7 @@ model User {
     password        String
     address         String?
     profilePhotoUrl String         @map("profile_photo_url")
-    role            UserRole       @default(USER)
+    role            UserRole       @default(CUSTOMER)
     createdAt       DateTime       @default(now()) @map("created_at")
     cart            Cart?
     orders          Order[]
@@ -16,8 +16,9 @@ model User {
 }
 
 enum UserRole {
-    USER
     ADMIN
+    PRODUCT_MANAGER
+    CUSTOMER
 
     @@map("user_role")
 }
