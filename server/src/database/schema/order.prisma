@@ -1,0 +1,34 @@
+model Order {
+    id               Int         @id @default(autoincrement())
+    userId           Int         @map("user_id")
+    user             User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+    productId        Int         @map("productId")
+    product          Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+    packageId        Int         @map("package_id")
+    package          Package     @relation(fields: [packageId], references: [id], onDelete: Cascade)
+    payPalOrderId    String?        @unique
+    status           OrderStatus @default(PROCESSING)
+    quantity         Int
+    price            Float
+    createdAt        DateTime    @default(now()) @map("created_at")
+    confirmedAt      DateTime?   @map("confirmed_at")
+    packedAt         DateTime?   @map("packed_at")
+    shippedAt        DateTime?   @map("shipped_at")
+    outForDeliveryAt DateTime?   @map("out_for_delivery_at")
+    deliveredAt      DateTime?   @map("delivered_at")
+    cancelledAt      DateTime?   @map("cancelled_at")
+
+    @@map("orders")
+}
+
+enum OrderStatus {
+    PROCESSING
+    CONFIRMED
+    PACKED
+    SHIPPED
+    OUT_FOR_DELIVERY
+    DELIVERED
+    CANCELLED
+
+    @@map("order_status")
+}

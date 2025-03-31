@@ -1,0 +1,10 @@
+model Cart {
+    id         Int        @id @default(autoincrement())
+    userId     Int        @unique @map("user_id")
+    user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    totalPrice Float      @default(0.0) @map("total_price")
+    items      CartItem[]
+    createdAt  DateTime   @default(now()) @map("created_at")
+
+    @@map("carts")
+}

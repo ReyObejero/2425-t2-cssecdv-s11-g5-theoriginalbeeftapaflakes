@@ -1,0 +1,87 @@
+@import '~typeface-roboto';
+
+.admin-register-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f5f5;
+    font-family: 'Roboto', sans-serif;
+}
+
+.admin-form-container {
+    width: 50%;
+    background: #FFF;
+    padding: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+}
+
+h2 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.admin-register-input-group {
+    margin-bottom: 1rem;
+}
+
+.admin-register-input-group label {
+    display: block;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.admin-register-input-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #DDD;
+}
+
+.admin-register-input-field {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 16px;
+}
+
+.admin-register-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #333;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.admin-register-button:hover {
+    background-color: #555;
+}
+
+.admin-login {
+    color: #000000;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 0.5rem;
+}
+
+.admin-login:hover {
+    text-decoration: underline;
+}
+
+.admin-error-message {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: red;
+    font-weight: bold;
+}
+
+.login-error-message {
+    text-align: center;
+    
+    color: red;
+    font-weight: bold;
+}

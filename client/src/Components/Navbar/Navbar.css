@@ -1,0 +1,165 @@
+@import '~typeface-roboto';
+
+.logo-img {
+    width: 110px;
+    height: auto;
+    padding: 20px;
+}
+
+.search-img, .menu-img {
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+}
+
+.cart-img {
+    width: 29px;
+    height: 29px;
+    position: relative;
+    cursor: pointer;
+}
+
+.user-img {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    margin-top: 4px;
+}
+
+.navbar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 2px;
+    padding-right: 1.5rem;
+    box-shadow: 0 1px 3px -2px black;
+    color: #F0EAD6;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #fffffe;
+    z-index: 3;
+    box-sizing: border-box;
+}
+
+
+.nav-right {
+    display: flex;
+    justify-content: space-between;
+    width: 92%;
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Roboto';
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 50px;
+    color: #626262;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.nav-menu li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+    font-family: 'Roboto';
+    position: relative; 
+}
+
+.nav-menu li:hover {
+    color: #000000;
+}
+
+.nav-menu hr {
+    border: none;
+    width: 80%;
+    height: 3px;
+    border-radius: 10px;
+    background-color: beige;
+}
+
+.nav-login-cart {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 45px;
+    position: relative;
+}
+
+.nav-cart-count {
+    width: 13px;
+    height: 13px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    font-size: 11px;
+    background: red;
+    color: white;
+    position: absolute; 
+    top: 8px; 
+    right: 140px;
+    font-family: 'Roboto';
+}
+
+.username-display {
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    text-align: left;
+    font-size: 14px;
+    color: #333;
+}
+
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 30px;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    width: 200px;
+    z-index: 1000;
+}
+
+.dropdown-menu-icon {
+    position: absolute;
+    right: 70px;
+    top: 44px;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    width: 200px;
+    z-index: 1000;
+}
+
+.dropdown-button button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    text-align: left;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.dropdown-button button:hover {
+    background-color: #f0f0f0;
+}
+
+.cart-img:hover, .search-img:hover, .user-img:hover, .menu-img:hover {
+    transform: scale(1.1);
+}

@@ -1,0 +1,6 @@
+.order-management-container{
+    overflow: hidden;
+    overflow: -moz-hidden-unscrollable;
+    overflow-x: hidden;
+    max-width: 100%;
+}

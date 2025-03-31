@@ -1,0 +1,13 @@
+model PackageItem {
+    id              Int           @id @default(autoincrement())
+    flavorId        Int           @map("flavor_id")
+    flavor          Flavor        @relation(fields: [flavorId], references: [id], onDelete: Cascade)
+    flavorVariantId Int           @map("flavor_variant_id")
+    flavorVariant   FlavorVariant @relation(fields: [flavorVariantId], references: [id], onDelete: Cascade)
+    packageId       Int           @map("package_id")
+    package         Package       @relation(fields: [packageId], references: [id], onDelete: Cascade)
+    quantity        Int
+    createdAt       DateTime      @default(now()) @map("created_at")
+
+    @@map("package_items")
+}

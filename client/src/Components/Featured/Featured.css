@@ -1,0 +1,37 @@
+.container .features {
+    padding: 10px;
+    display: grid;
+    grid-template-rows: 300px;
+    grid-template-columns: 300px 300px 300px;
+    justify-content: center;
+    grid-gap: 20px;
+}
+
+.imagecontainer img {
+    width: 100%;
+    height: auto; 
+    border-radius: 30%;
+    align-items: center; 
+}
+
+.imagecontainer {
+    width: 300px;
+    height: 300px;
+}
+
+.hr {
+    margin-top: 0px;
+    margin-bottom: 18px;
+}
+
+.product-title {
+    text-decoration: none; /* Remove underline by default */
+}
+  
+.product-title h3 {
+    color: #171717;
+}
+  
+.product-title h3:hover {
+    text-decoration: underline; /* Add underline on hover */
+}

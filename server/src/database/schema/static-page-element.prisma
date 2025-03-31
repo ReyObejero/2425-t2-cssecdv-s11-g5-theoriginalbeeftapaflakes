@@ -1,0 +1,10 @@
+model StaticPageElement {
+    id Int @id @default(autoincrement())
+    staticPageId Int @map("static_page_id")
+    staticPage StaticPage @relation(fields: [staticPageId], references: [id], onDelete: Cascade)
+    title String
+    content String
+    createdAt DateTime @default(now()) @map("created_at")
+
+    @@map("static_page_elements")
+}

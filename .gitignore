@@ -1,0 +1,9 @@
+<<<<<<< HEAD
+**/node_modules
+.idea
+.vscode
+=======
+.idea
+.vscode
+**/node_modules
+>>>>>>> d05a80c9ed62db2dc3fa0cce74a7597245eb6bad

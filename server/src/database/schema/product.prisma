@@ -1,0 +1,16 @@
+model Product {
+    id            Int        @id @default(autoincrement())
+    name          String     @unique
+    description   String
+    ingredients   String
+    imageUrl      String
+    numReviews    Int        @default(0) @map("num_reviews")
+    averageRating Float      @default(0.0) @map("average_rating")
+    createdAt     DateTime   @default(now()) @map("created_at")
+    packages      Package[]
+    reviews       Review[]
+    cartItems     CartItem[]
+    orders        Order[]
+
+    @@map("products")
+}

@@ -1,0 +1,14 @@
+model CartItem {
+    id        Int      @id @default(autoincrement())
+    cartId    Int      @map("cart_id")
+    cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+    productId Int      @map("product_id")
+    product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+    packageId Int      @map("package_id")
+    package   Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+    quantity  Int
+    price     Float
+    createdAt DateTime @default(now()) @map("created_at")
+
+    @@map("cart_items")
+}

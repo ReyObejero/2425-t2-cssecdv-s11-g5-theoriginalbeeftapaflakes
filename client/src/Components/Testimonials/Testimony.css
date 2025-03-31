@@ -1,0 +1,54 @@
+.testimony-container {
+  width: 100%;
+  height: 100%;
+  margin-top: 80px;
+  margin-bottom: 100px;
+}
+
+.swiper-container {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  width: 80%;
+  margin-left: 200px;
+}
+
+.card-image {
+  width: 15%;
+  height: auto;
+  margin-right: 10px;
+}
+
+.card-content {
+  text-align: left;
+}
+
+.card-name {
+  font-size: 32px;
+  font-weight: bold;
+  margin-left: 20px;
+}
+
+.card-comment {
+  font-size: 16px;
+  color: #333;
+  margin-left: 20px;
+}
+
+.swiper-button-next, .swiper-button-prev {
+  color: rgba(0, 0, 0, 0.5); 
+}
+
+.swiper-button-next::after, .swiper-button-prev::after {
+  font-size: 32px;
+}

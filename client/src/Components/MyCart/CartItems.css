@@ -1,0 +1,288 @@
+.grid-container,
+.elements-container,
+.grid-item {
+    width: 100%;
+}
+
+.grid-container {
+    padding-top: 4em;
+    margin-top: 2em;
+}
+
+.elements-container {
+    display: flex;
+    justify-content: center;
+}
+
+.cart-container {
+    font-family: 'Roboto', sans-serif;
+    margin-top: 2em;
+}
+
+.flex-container {
+    display: flex;
+    width: 100%;
+}
+
+.items-container {
+    flex: 2;
+    margin-right: 20px;
+    overflow-y: auto;
+    height: 408px;
+    scrollbar-width: none;
+}
+
+.items-container h1 {
+    text-align: center;
+}
+
+.checkout-container {
+    flex: 1;
+    align-self: flex-start;
+    padding-left: 20px;
+}
+
+.checkout-container h2 {
+    margin: 0;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    border: 1px solid black;
+    padding: 10px;
+    border-top-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.item .item-details {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    flex-direction: column;
+}
+
+.item-details p {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 10px;
+}
+
+.item img {
+    width: 80px;
+    height: 75px;
+    margin-right: 30px;
+    margin-left: 30px;
+}
+
+.btn {
+    margin-left: auto;
+    padding: 10px 20px;
+    border: none;
+    background-color: rgb(27, 27, 27);
+    color: white;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.delete-btn img {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.delete-btn {
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.checkout-btn {
+    font-family: 'Roboto', sans-serif;
+    margin-bottom: 50px;
+}
+
+.checkout-btn:disabled {
+    color: black;
+    cursor: not-allowed;
+    background-color: darkgray;
+}
+
+.btn:hover {
+    color: black;
+    background-color: white;
+}
+
+.add-btn {
+    margin-bottom: 40px;
+    margin-top: 40px;
+    margin: 20px;
+}
+
+.price-quantity-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.price-container p {
+    font-size: 25px;
+    font-weight: 400;
+}
+
+.quantity-container {
+    display: flex;
+    align-items: center;
+    justify-self: auto;
+}
+
+.quantity-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.quantity-btn img {
+    width: 30px;
+    height: 30px;
+}
+
+.quantity-value {
+    font-size: 25px;
+}
+
+.cart-items {
+    max-height: 123px;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.totals {
+    margin-top: 20px;
+}
+
+.checkout-modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.checkout-modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.checkout-modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.btn.cancel-btn,
+.btn.confirm-btn {
+    margin-left: 10px;
+}
+.cart-modal-title-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.cart-modal-body-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.cart-modal-footer-center {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.cart-modal-title-center {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.cart-modal-body-center {
+    text-align: center;
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background-color: black;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: black;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}

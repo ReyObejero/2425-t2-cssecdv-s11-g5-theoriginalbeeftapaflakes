@@ -1,0 +1,9 @@
+model StaticPage {
+    id Int @id @default(autoincrement())
+    title String
+    slug String @unique
+    createdAt DateTime @default(now()) @map("created_at")
+    elements StaticPageElement[]
+
+    @@map("static_pages")
+}

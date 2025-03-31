@@ -1,0 +1,114 @@
+@import '~typeface-roboto';
+
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    font-family: 'Roboto', sans-serif;
+}
+
+.login-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    background: #fff;
+    padding: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+}
+
+.login-section {
+    width: 50%;
+    margin-right: 50px;
+}
+
+.new-customer-section {
+    width: 50%;
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.login-input-group {
+    margin-bottom: 1rem;
+}
+
+.login-input-group label {
+    display: flex;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+input[type='text'],
+input[type='password'] {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+}
+
+.login-button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    width: 100%;
+    font-weight: bold;
+}
+
+.create-account-button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 39px;
+    font-weight: bold;
+}
+
+.login-button:hover,
+.create-account-button:hover {
+    background-color: #555;
+}
+
+.forgot-password {
+    color: #000000;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 0.5rem;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+.benefits-list {
+    padding: 0;
+    margin-bottom: 1rem;
+    margin-left: 20px;
+}
+
+.benefits-list li {
+    margin-bottom: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .login-container {
+        flex-direction: column;
+    }
+    .login-section,
+    .new-customer-section {
+        width: 100%;
+    }
+}
+
+.login-page .p-error-bubble::after {
+    content: none;
+}

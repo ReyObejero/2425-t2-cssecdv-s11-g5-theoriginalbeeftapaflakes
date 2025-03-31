@@ -1,0 +1,264 @@
+@import '~typeface-roboto';
+
+.order-grid-container,
+.order-elements-container,
+.order-grid-product {
+    width: 100%;
+}
+
+.order-grid-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10em;
+    padding-bottom: 4em;
+}
+
+.order-elements-container {
+    max-width: 900px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.order-dashboard-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+    width: 100%;
+    font-size: 30px;
+    color: #333;
+    text-decoration: underline;
+    margin-left: 20px;
+}
+
+.order-filter-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: right;
+    width: 100%;
+    font-size: 30px;
+    font-weight: 400;
+    color: #333;
+    margin-left: 20px;
+}
+
+.order-filter-search input {
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 150px;
+}
+
+.order-filter-dropdown select { 
+    margin-left: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.order-cart-container {
+    font-family: 'Roboto', sans-serif;
+    margin-top: 2em;
+}
+
+.order-flex-container {
+    display: flex;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 896px;
+}
+
+.order-product-container {
+    flex: 2;
+    margin-right: 20px;
+}
+
+.order-product-container h1 {
+    text-align: center;
+}
+
+.order-product-details {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    flex-direction: column;
+}
+
+.order-product-details p {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 10px;
+}
+
+.order-price-quantity-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.order-price-quantity span {
+    font-size: 25px;
+    font-weight: 400;
+    margin-left: 12px;
+}
+
+.order-price-container {
+    display: flex;
+    align-items: center;
+}
+
+.order-quantity-container {
+    display: flex;
+    align-items: center;
+}
+
+.order-price-value,
+.order-quantity-value {
+    font-size: 25px;
+    margin-right: 20px;
+    width: 200px;
+}
+
+.order-price-value>div,
+.order-quantity-value>div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-price-value input,
+.order-quantity-value input {
+    width: 38%;
+    height: 30px;
+    box-sizing: border-box;
+    margin-top: 4px;
+}
+
+.order-status-dropdown {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: #333;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.order-status-dropdown:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
+}
+
+.order-modal-title-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.order-modal-body-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.order-modal-footer-center {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.order-modal-table {
+    display: flex;
+    justify-content: center;
+	width: 100%;
+	table-layout: fixed;
+}
+
+.order-modal-table td {
+	width: 50%;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.order-modal-cancel-inventory-btn {
+    padding: auto;
+    background-color: white;
+    padding: 0.4rem 5px;
+    color: black;
+    border: 1px solid black;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.order-modal-cancel-inventory-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.order-open-product-btn {
+    padding: auto;
+    background-color: white;
+    padding: 0.4rem 5px;
+    color: black;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+.order-open-product-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.status-message {
+    position: fixed;
+    top: 20px; /* Changed from bottom */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    padding: 15px 20px;
+    border-radius: 8px;
+    background-color: #333;
+    color: #fff;
+    font-size: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.5s ease-in-out, fadeOut 0.5s 2.5s ease-in-out forwards;
+}
+
+.success {
+    background-color: #4CAF50;
+}
+
+.error {
+    background-color: #F44336;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-50%) translateY(-100%);
+    }
+    to {
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}

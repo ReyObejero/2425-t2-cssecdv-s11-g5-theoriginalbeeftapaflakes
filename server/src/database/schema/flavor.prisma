@@ -1,0 +1,9 @@
+model Flavor {
+    id           Int             @id @default(autoincrement())
+    name         String          @unique
+    createdAt    DateTime        @default(now()) @map("created_at")
+    variants     FlavorVariant[]
+    packageItems PackageItem[]
+
+    @@map("flavors")
+}

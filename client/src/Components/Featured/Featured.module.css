@@ -1,0 +1,106 @@
+@import '~typeface-roboto';
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.title {
+    text-align: center;
+    font-size: 4em;
+    margin-top: 60px;
+    font-weight: 700;
+    font-family: 'Lora', serif;
+}
+
+.container .features {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: center;
+}
+
+.item {
+    display: grid;
+    grid-template-columns: 0.6fr 1.4fr 1.4fr 0.6fr;
+    align-items: center; 
+    justify-content: center; 
+}
+
+.row {
+    grid-template-areas: "image description";
+}
+
+.row-reverse {
+    grid-template-areas: "description image";
+}
+
+.imagecontainer {
+    grid-area: image;
+    width: 500px;
+    height: 500px;
+    display: flex; 
+    margin-bottom: 50px;
+    margin-top: 40px;
+    grid-column: 2;
+}
+
+.imagecontainer img {
+    width: 100%;
+    height: auto;
+    border-top-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+}
+
+.second-item .imagecontainer img {
+    border-top-right-radius: 50px; 
+    border-bottom-left-radius: 50px; 
+    border-top-left-radius: 0;
+    border-bottom-right-radius: 0; 
+}
+
+.second-item .imagecontainer {
+    grid-column: 3;
+    margin-left: auto;
+}
+
+.second-item .description {
+    grid-column: 2;
+}
+
+.description {
+    grid-area: description;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: flex-start; 
+    padding-left: 20px;
+    grid-column: 3;
+}
+
+.description h2 {
+    font-size: 30px;
+    font-family: 'Lora', serif;
+}
+
+.description p {
+    font-size: 20px;
+}
+
+.description .button {
+    padding: 15px 30px;
+    border: none;
+    background-color: #000000;
+    color: white;
+    cursor: pointer;
+    align-self: center;
+    font-family: 'Roboto', sans-serif;
+}
+
+.description .button-right {
+    align-self: center;
+}
+
+.description .button:hover {
+    background-color: white; 
+    color: black; 
+}

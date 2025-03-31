@@ -1,0 +1,13 @@
+.CS-container{
+    overflow: hidden;
+    overflow: -moz-hidden-unscrollable;
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+  
+  .dulo {
+    position: relative;
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+  }
