@@ -49,21 +49,10 @@ export const authService = {
     ): Promise<{ accessToken: string; refreshToken: string; user: User }> => {
         const { username, password } = input;
 
-        if (!username) {
-            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.USERNAME_INVALID);
-        }
-
-        if (!password) {
-            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.PASSWORD_INVALID);
-        }
-
         const user = await userService.getUserByUsername(username);
-        if (!user) {
-            throw createError(statusCodes.clientError.NOT_FOUND, errorMessages.USERNAME_INVALID);
-        }
 
-        if (!(await verify(user.password, password))) {
-            throw createError(statusCodes.clientError.UNAUTHORIZED, errorMessages.PASSWORD_INVALID);
+        if (!username || password || !user || !(await verify(user.password, password))) {
+            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.INVALID_CREDENTIALS);
         }
 
         if (refreshToken) {

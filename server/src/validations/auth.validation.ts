@@ -3,8 +3,8 @@ import { errorMessages, MIN_PASSWORD_LENGTH, MIN_USERNAME_LENGTH } from '@/const
 
 export const loginSchema = z.object({
     body: z.object({
-        username: z.string({ message: errorMessages.USERNAME_INVALID }),
-        password: z.string({ message: errorMessages.PASSWORD_INVALID }),
+        username: z.string({ message: errorMessages.INVALID_CREDENTIALS }),
+        password: z.string({ message: errorMessages.INVALID_CREDENTIALS }),
     }),
 });
 

@@ -6,7 +6,7 @@ import { prismaClient } from '@/database';
 export const userService = {
     getUserByEmail: async (email: string): Promise<User | null> => {
         if (!email) {
-            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.EMAIL_INVALID);
+            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.INVALID_INPUT);
         }
 
         return await prismaClient.user.findUnique({
@@ -26,7 +26,7 @@ export const userService = {
 
     getUserByUsername: async (username: string): Promise<User | null> => {
         if (!username) {
-            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.USERNAME_INVALID);
+            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.INVALID_INPUT);
         }
 
         return await prismaClient.user.findUnique({

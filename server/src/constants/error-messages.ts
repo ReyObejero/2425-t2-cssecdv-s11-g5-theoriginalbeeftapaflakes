@@ -13,6 +13,7 @@ export const errorMessages = {
     EMAIL_ALREADY_IN_USE: 'Email is already in use.',
     EMAIL_INVALID: 'Email is invalid.',
     INTERNAL_SERVER_ERROR: 'Internal Server Error',
+    INVALID_CREDENTIALS: 'The username and/or password provided was invalid.',
     INVALID_INPUT: 'The information provided was invalid.',
     ORDER_ID_INVALID: 'Order ID is invalid.',
     ORDER_STATUS_INVALID: 'Order status is invalid.',
