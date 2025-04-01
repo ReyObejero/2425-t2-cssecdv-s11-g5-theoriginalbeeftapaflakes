@@ -11,11 +11,11 @@ export const loginSchema = z.object({
 export const registerSchema = z.object({
     body: z.object({
         username: z
-            .string({ message: errorMessages.USERNAME_INVALID })
-            .min(MIN_USERNAME_LENGTH, { message: errorMessages.PASSWORD_TOO_SHORT }),
-        email: z.string({ message: errorMessages.EMAIL_INVALID }).email({ message: errorMessages.EMAIL_INVALID }),
+            .string({ message: errorMessages.INVALID_INPUT })
+            .min(MIN_USERNAME_LENGTH, { message: errorMessages.INVALID_INPUT }),
+        email: z.string({ message: errorMessages.INVALID_INPUT }).email({ message: errorMessages.INVALID_INPUT }),
         password: z
-            .string({ message: errorMessages.PASSWORD_INVALID })
-            .min(MIN_PASSWORD_LENGTH, { message: errorMessages.PASSWORD_TOO_SHORT }),
+            .string({ message: errorMessages.INVALID_INPUT })
+            .min(MIN_PASSWORD_LENGTH, { message: errorMessages.INVALID_INPUT }),
     }),
 });

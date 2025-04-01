@@ -22,24 +22,14 @@ export const authService = {
     register: async (input: RegisterInput, role?: UserRole): Promise<User> => {
         const { username, email, password } = input;
 
-        if (!username) {
-            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.USERNAME_INVALID);
-        }
-
-        if (!email) {
-            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.EMAIL_INVALID);
-        }
-
-        if (!password) {
-            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.USERNAME_INVALID);
-        }
-
-        if (await userService.getUserByUsername(username)) {
-            throw createError(statusCodes.clientError.CONFLICT, errorMessages.USERNAME_ALREADY_IN_USE);
-        }
-
-        if (await userService.getUserByEmail(email)) {
-            throw createError(statusCodes.clientError.CONFLICT, errorMessages.EMAIL_ALREADY_IN_USE);
+        if (
+            !username ||
+            !email ||
+            !password ||
+            (await userService.getUserByUsername(username)) ||
+            (await userService.getUserByEmail(email))
+        ) {
+            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.INVALID_INPUT);
         }
 
         return await prismaClient.user.create({
