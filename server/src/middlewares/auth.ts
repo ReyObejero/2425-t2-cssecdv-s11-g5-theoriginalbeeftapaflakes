@@ -3,6 +3,7 @@ import createError from 'http-errors';
 import { verify, type JwtPayload, type VerifyErrors } from 'jsonwebtoken';
 import { env } from '@/config';
 import { errorMessages, statusCodes } from '@/constants';
+import { getTokenFromHeader } from '@/utils';
 
 /**
  * Middleware function to authenticate the user with the JWT access token in the HTTP cookies. It verifies the token and
@@ -23,14 +24,9 @@ import { errorMessages, statusCodes } from '@/constants';
  * @param next - The next function
  */
 export const authenticate = (req: Request, res: Response, next: NextFunction): void => {
-    const accessToken = req.cookies[env.jwt.ACCESS_TOKEN_COOKIE_NAME];
+    const accessToken = getTokenFromHeader(req.headers['authorization']);
     if (!accessToken) {
-        return next(
-            createError(
-                statusCodes.clientError.UNAUTHORIZED,
-                accessToken === undefined ? errorMessages.TOKEN_NOT_FOUND : errorMessages.TOKEN_INVALID,
-            ),
-        );
+        return next(createError(statusCodes.clientError.UNAUTHORIZED, errorMessages.TOKEN_NOT_FOUND));
     }
 
     verify(
