@@ -51,7 +51,7 @@ export const authService = {
 
         const user = await userService.getUserByUsername(username);
 
-        if (!username || password || !user || !(await verify(user.password, password))) {
+        if (!username || !password || !user || !(await verify(user.password, password))) {
             throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.INVALID_CREDENTIALS);
         }
 
