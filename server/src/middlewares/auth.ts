@@ -1,9 +1,10 @@
-import { type NextFunction, type Request, type Response } from 'express';
+import { RequestHandler, type NextFunction, type Request, type Response } from 'express';
 import createError from 'http-errors';
 import { verify, type JwtPayload, type VerifyErrors } from 'jsonwebtoken';
 import { env } from '@/config';
 import { errorMessages, statusCodes } from '@/constants';
 import { getTokenFromHeader } from '@/utils';
+import { UserRole } from '@prisma/client';
 
 /**
  * Middleware function to authenticate the user with the JWT access token in the HTTP cookies. It verifies the token and
@@ -55,10 +56,12 @@ export const authenticate = (req: Request, res: Response, next: NextFunction): v
  * @param res - The response object
  * @param next - The next function
  */
-export const protect = (req: Request, res: Response, next: NextFunction): void => {
-    if (req.jwtPayload?.role !== 'ADMIN') {
-        next(createError(statusCodes.clientError.FORBIDDEN, errorMessages.ACCESS_DENIED));
-    }
+export const protect =
+    (role: UserRole): RequestHandler =>
+    (req: Request, res: Response, next: NextFunction): void => {
+        if (req.jwtPayload?.role !== role) {
+            next(createError(statusCodes.clientError.FORBIDDEN, errorMessages.ACCESS_DENIED));
+        }
 
-    return next();
-};
+        return next();
+    };
