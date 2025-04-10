@@ -13,3 +13,11 @@ export const generateRefreshToken = (userId: number, role: UserRole): string => 
         expiresIn: env.jwt.REFRESH_TOKEN_EXPIRE_TIME,
     });
 };
+
+export const getTokenFromHeader = (authHeader?: string): string | null => {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return null;
+    }
+
+    return authHeader.split(' ')[1];
+};

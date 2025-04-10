@@ -45,7 +45,7 @@ export const authService = {
 
     login: async (
         input: LoginInput,
-        refreshToken: string,
+        refreshToken: string | null,
     ): Promise<{ accessToken: string; refreshToken: string; user: User }> => {
         const { username, password } = input;
 
