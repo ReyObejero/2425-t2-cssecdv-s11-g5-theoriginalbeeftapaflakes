@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import axiosInstance from '..   ../API/axiosInstance';
+import axiosInstance from '../../API/axiosInstance';
 import { ORDERS_URL } from '../../API/constants';
 import './orders.css';
 import { AuthContext } from '../../contexts';
