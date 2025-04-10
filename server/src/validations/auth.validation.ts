@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { errorMessages, MIN_PASSWORD_LENGTH, MIN_USERNAME_LENGTH } from '@/constants';
 
-export const authenticationSchema = z.object({
+export const loginSchema = z.object({
     body: z.object({
         username: z.string({ message: errorMessages.INVALID_CREDENTIALS }),
         password: z.string({ message: errorMessages.INVALID_CREDENTIALS }),

@@ -11,8 +11,8 @@ export const authController = {
         return sendResponse(res, statusCodes.successful.CREATED, { data: user });
     }),
 
-    authenticate: asyncRequestHandlerWrapper(async (req: Request, res: Response): Promise<void> => {
-        const { accessToken, refreshToken, user } = await authService.authenticate(
+    login: asyncRequestHandlerWrapper(async (req: Request, res: Response): Promise<void> => {
+        const { accessToken, refreshToken, user } = await authService.login(
             req.body,
             req.cookies[env.jwt.REFRESH_TOKEN_COOKIE_NAME],
         );

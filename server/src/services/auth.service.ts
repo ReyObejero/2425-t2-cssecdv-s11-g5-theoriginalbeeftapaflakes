@@ -43,7 +43,7 @@ export const authService = {
         });
     },
 
-    authenticate: async (
+    login: async (
         input: LoginInput,
         refreshToken: string,
     ): Promise<{ accessToken: string; refreshToken: string; user: User }> => {
