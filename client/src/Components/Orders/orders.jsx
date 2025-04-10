@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import axiosInstance from '../../API/axiosInstance';
+import axiosInstance from '..   ../API/axiosInstance';
 import { ORDERS_URL } from '../../API/constants';
 import './orders.css';
 import { AuthContext } from '../../contexts';
@@ -9,6 +9,11 @@ export const Orders = () => {
     const { user } = useContext(AuthContext);
 
     const getOrders = async () => {
+        if (!user) {
+            console.log('User is not logged in.');
+            return;
+        }
+
         try {
             const accessEndpoint = user.role === 'ADMIN' ? '' : 'me';
             const orders = (await axiosInstance.get(`${ORDERS_URL}/${accessEndpoint}`)).data.data;
@@ -21,7 +26,7 @@ export const Orders = () => {
 
     useEffect(() => {
         getOrders();
-    }, []);
+    }, [user]);
 
     const handleStatusChange = async (orderId, updatedStatus) => {
         try {
@@ -35,6 +40,7 @@ export const Orders = () => {
     if (!user) {
         return <div>Loading...</div>;
     }
+
     return (
         <div className="order-list">
             <h1>Orders</h1>
@@ -73,7 +79,7 @@ export const Orders = () => {
                                 ) : (
                                     <>
                                         {order.status}
-                                        {order.status !== 'DELIVERED' && (
+                                        {user.role === 'product_manager' && order.status !== 'DELIVERED' && (
                                             <button onClick={() => handleStatusChange(order.id, 'DELIVERED')}>
                                                 Mark as Delivered
                                             </button>
