@@ -11,7 +11,8 @@ model User {
     orders              Order[]
     reviews             Review[]
     refreshTokens       RefreshToken[]
-    failedLoginAttempts Int             @map("failed_login_attempts")
+    failedLoginAttempts Int             @default(0) @map("failed_login_attempts")
+    lockoutUntil        DateTime?       @map("lockout_until")
 
     @@map("users")
 }

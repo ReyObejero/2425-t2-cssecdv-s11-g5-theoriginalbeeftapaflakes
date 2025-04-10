@@ -1,7 +1,7 @@
-import { type User, type UserRole } from '@prisma/client';
+import { type User, UserRole } from '@prisma/client';
 import { hash, verify } from 'argon2';
 import createError from 'http-errors';
-import { errorMessages, statusCodes } from '@/constants';
+import { errorMessages, LOGIN_LOCKOUT_DURATION_MINUTES, statusCodes } from '@/constants';
 import { prismaClient } from '@/database';
 import { generateAccessToken, generateRefreshToken } from '@/utils';
 import { tokenService } from './token.service';
@@ -38,7 +38,7 @@ export const authService = {
                 email,
                 password: await hash(password),
                 profilePhotoUrl: 'https://asset.cloudinary.com/dqfjotjba/387e2481f384f9748dd285b3d059c92c',
-                ...(role && role !== 'USER' && { role }),
+                ...(role && role !== UserRole.CUSTOMER && { role }),
             },
         });
     },
@@ -54,6 +54,39 @@ export const authService = {
         if (!username || password || !user || !(await verify(user.password, password))) {
             throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.INVALID_CREDENTIALS);
         }
+
+        const now = new Date();
+
+        if (user.lockoutUntil && user.lockoutUntil > now) {
+            const minutesLeft = Math.ceil((user.lockoutUntil.getTime() - now.getTime()) / 60000);
+            throw createError(statusCodes.clientError.FORBIDDEN, errorMessages.ACCOUNT_LOCKED);
+        }
+
+        const isPasswordValid = await verify(user.password, password);
+        if (!isPasswordValid) {
+            const failedAttempts = user.failedLoginAttempts + 1;
+
+            const updates: any = { failedLoginAttempts: failedAttempts };
+
+            if (failedAttempts >= 5) {
+                updates.lockoutUntil = new Date(now.getTime() + LOGIN_LOCKOUT_DURATION_MINUTES * 60 * 1000);
+            }
+
+            await prismaClient.user.update({
+                where: { id: user.id },
+                data: updates,
+            });
+
+            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.INVALID_CREDENTIALS);
+        }
+
+        await prismaClient.user.update({
+            where: { id: user.id },
+            data: {
+                failedLoginAttempts: 0,
+                lockoutUntil: null,
+            },
+        });
 
         if (refreshToken) {
             const existingRefreshToken = await tokenService.getRefreshTokenByToken(refreshToken);

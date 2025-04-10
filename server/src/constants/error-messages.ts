@@ -2,6 +2,7 @@ import { MIN_PASSWORD_LENGTH, MIN_USERNAME_LENGTH } from './validation-rules';
 
 export const errorMessages = {
     ACCESS_DENIED: 'Access is denied.',
+    ACCOUNT_LOCKED: 'Too many login attempts. Please try again later.',
     CARD_EXPIRATION_DATE_INVALID: 'Card expiration date is invalid.',
     CARD_NUMBER_INVALID: 'Card number is invalid.',
     CARD_SECURITY_CODE_INVALID: 'Card security code is invalid.',
