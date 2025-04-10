@@ -1,23 +1,26 @@
 model User {
-    id              Int            @id @default(autoincrement())
-    username        String         @unique
-    email           String         @unique
-    password        String
-    address         String?
-    profilePhotoUrl String         @map("profile_photo_url")
-    role            UserRole       @default(USER)
-    createdAt       DateTime       @default(now()) @map("created_at")
-    cart            Cart?
-    orders          Order[]
-    reviews         Review[]
-    refreshTokens   RefreshToken[]
+    id                  Int             @id @default(autoincrement())
+    username            String          @unique
+    email               String          @unique
+    password            String
+    address             String?
+    profilePhotoUrl     String          @map("profile_photo_url")
+    role                UserRole        @default(CUSTOMER)
+    createdAt           DateTime        @default(now()) @map("created_at")
+    cart                Cart?
+    orders              Order[]
+    reviews             Review[]
+    refreshTokens       RefreshToken[]
+    failedLoginAttempts Int             @default(0) @map("failed_login_attempts")
+    lockoutUntil        DateTime?       @map("lockout_until")
 
     @@map("users")
 }
 
 enum UserRole {
-    USER
     ADMIN
+    PRODUCT_MANAGER
+    CUSTOMER
 
     @@map("user_role")
 }
