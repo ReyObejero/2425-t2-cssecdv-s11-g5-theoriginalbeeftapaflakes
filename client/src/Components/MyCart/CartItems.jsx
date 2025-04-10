@@ -154,6 +154,8 @@ const CartItems = () => {
 
             document.body.classList.remove('modal-open');
             setShowModal(false);
+
+            fetchCartItems();
         } catch (error) {
             console.log('Error during checkout:', error);
             alert('An error occurred during checkout. Please try again.');
