@@ -6,6 +6,7 @@ import { AuthContext } from '../../contexts';
 
 export const Orders = () => {
     const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
     const { user } = useContext(AuthContext);
 
     const getOrders = async () => {
@@ -15,12 +16,24 @@ export const Orders = () => {
         }
 
         try {
-            const accessEndpoint = user.role === 'ADMIN' ? '' : 'me';
-            const orders = (await axiosInstance.get(`${ORDERS_URL}/${accessEndpoint}`)).data.data;
-            setOrders(orders.items);
-            console.log('Orders', orders.items);
+            let accessEndpoint = '';
+            if (user.role === 'PRODUCT_MANAGER') {
+                accessEndpoint = '';
+            } else {
+                accessEndpoint = 'me';
+            }
+
+            console.log(`Fetching orders from endpoint: ${ORDERS_URL}/${accessEndpoint}`);
+            const response = await axiosInstance.get(`${ORDERS_URL}/${accessEndpoint}`);
+            const ordersData = response.data.data;
+
+            console.log('Fetched orders:', ordersData);
+
+            setOrders(ordersData.items || []);
         } catch (error) {
             console.log('Error fetching orders:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -28,7 +41,12 @@ export const Orders = () => {
         getOrders();
     }, [user]);
 
-    const handleStatusChange = async (orderId, updatedStatus) => {
+    const handleStatusChange = async (orderId, updatedStatus, orderOwnerId) => {
+        if (user.id !== orderOwnerId && updatedStatus === 'DELIVERED') {
+            console.log('Cannot mark this order as delivered as you do not own it.');
+            return;
+        }
+
         try {
             await axiosInstance.put(`${ORDERS_URL}/${orderId}`, { updatedStatus });
             getOrders();
@@ -44,66 +62,81 @@ export const Orders = () => {
     return (
         <div className="order-list">
             <h1>Orders</h1>
-            <table>
-                <thead>
-                    <tr>
-                        {user.role === 'ADMIN' && <th>Order #</th>}
-                        {user.role === 'ADMIN' && <th>User</th>}
-                        <th>Product</th>
-                        <th>Package</th>
-                        <th>Status</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Ordered At</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {orders.map((order) => (
-                        <tr key={order.id}>
-                            {user.role === 'ADMIN' && <td>{order.id}</td>}
-                            {user.role === 'ADMIN' && <td>{order.user.username}</td>}
-                            <td>{order.product.name}</td>
-                            <td>{order.package.name}</td>
-                            <td>
-                                {user.role === 'ADMIN' ? (
-                                    <select
-                                        value={order.status}
-                                        onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                                    >
-                                        <option value="PACKED">Packed</option>
-                                        <option value="SHIPPED">Shipped</option>
-                                        <option value="OUT_FOR_DELIVERY">Out for Delivery</option>
-                                        <option value="DELIVERED">Delivered</option>
-                                        <option value="CANCELLED">Cancelled</option>
-                                    </select>
-                                ) : (
-                                    <>
-                                        {order.status}
-                                        {user.role === 'product_manager' && order.status !== 'DELIVERED' && (
-                                            <button onClick={() => handleStatusChange(order.id, 'DELIVERED')}>
-                                                Mark as Delivered
-                                            </button>
-                                        )}
-                                    </>
-                                )}
-                            </td>
-                            <td>{order.quantity}</td>
-                            <td>{order.price}</td>
-                            <td>
-                                {`${new Date(order.createdAt).toLocaleDateString('en-US', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric',
-                                })} ${new Date(order.createdAt).toLocaleTimeString('en-US', {
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                    hour12: true,
-                                })}`}
-                            </td>
+            {loading ? (
+                <div>Loading...</div>
+            ) : (
+                <table>
+                    <thead>
+                        <tr>
+                            {user.role === 'PRODUCT_MANAGER' && <th>Order #</th>}
+                            {user.role === 'PRODUCT_MANAGER' && <th>User</th>}
+                            <th>Product</th>
+                            <th>Package</th>
+                            <th>Status</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Ordered At</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {orders.length === 0 ? (
+                            <tr>
+                                <td colSpan="8">No orders found.</td>
+                            </tr>
+                        ) : (
+                            orders.map((order) => (
+                                <tr key={order.id}>
+                                    {user.role === 'PRODUCT_MANAGER' && <td>{order.id}</td>}
+                                    {user.role === 'PRODUCT_MANAGER' && <td>{order.user.username}</td>}
+                                    <td>{order.product.name}</td>
+                                    <td>{order.package.name}</td>
+                                    <td>
+                                        {user.role === 'PRODUCT_MANAGER' ? (
+                                            <select
+                                                value={order.status}
+                                                onChange={(e) =>
+                                                    handleStatusChange(order.id, e.target.value, order.user.id)
+                                                }
+                                            >
+                                                <option value="PACKED">Packed</option>
+                                                <option value="SHIPPED">Shipped</option>
+                                                <option value="OUT_FOR_DELIVERY">Out for Delivery</option>
+                                                <option value="CANCELLED">Cancelled</option>
+                                            </select>
+                                        ) : (
+                                            <>
+                                                {order.status}
+                                                {user.id === order.user.id && order.status === 'OUT_FOR_DELIVERY' && (
+                                                    <button
+                                                        onClick={() =>
+                                                            handleStatusChange(order.id, 'DELIVERED', order.user.id)
+                                                        }
+                                                    >
+                                                        Mark as Delivered
+                                                    </button>
+                                                )}
+                                            </>
+                                        )}
+                                    </td>
+                                    <td>{order.quantity}</td>
+                                    <td>{order.price}</td>
+                                    <td>
+                                        {`${new Date(order.createdAt).toLocaleDateString('en-US', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                        })} ${new Date(order.createdAt).toLocaleTimeString('en-US', {
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            hour12: true,
+                                        })}`}
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            )}
         </div>
     );
 };
