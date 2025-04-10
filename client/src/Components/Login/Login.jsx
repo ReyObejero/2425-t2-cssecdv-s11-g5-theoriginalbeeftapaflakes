@@ -17,6 +17,9 @@ const Login = () => {
         event.preventDefault();
         try {
             const response = await axiosInstance.post(`${AUTH_URL}/login`, { username, password });
+            const token = response.data.token;
+            localStorage.setItem('token', token);
+
             setSuccessMessage('Login successful! Retrieving user information...');
 
             try {

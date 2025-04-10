@@ -30,6 +30,12 @@ export const orderController = {
         return sendResponse(res, statusCodes.successful.OK, { data: { items: orders } });
     }),
 
+    getAllOrders: asyncRequestHandlerWrapper(async (req: Request, res: Response): Promise<void> => {
+        const orders = await orderService.getOrders();
+
+        return sendResponse(res, statusCodes.successful.OK, { data: { items: orders } });
+    }),
+
     getOrders: asyncRequestHandlerWrapper(async (req: Request, res: Response): Promise<void> => {
         const orders = await orderService.getOrdersByUserId(req!.jwtPayload!.userId);
 
