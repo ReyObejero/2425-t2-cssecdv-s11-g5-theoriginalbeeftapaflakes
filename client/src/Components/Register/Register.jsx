@@ -115,6 +115,17 @@ const Register = () => {
                             <div className="p-error-bubble">{errorMessage}</div>
                         )}
                     </div>
+                    {/* Password policies box */}
+                    <div className="password-requirements-box">
+                        <h4>Password Requirements:</h4>
+                        <ul>
+                            <li>Minimum eight characters</li>
+                            <li>At least one uppercase letter</li>
+                            <li>At least one lowercase letter</li>
+                            <li>At least one number</li>
+                            <li>At least one special character</li>
+                        </ul>
+                    </div>
                     <div>{successMessage && <div className="p-success-message">{successMessage}</div>}</div>
                     <button type="submit" className="register-button">
                         CREATE ACCOUNT
