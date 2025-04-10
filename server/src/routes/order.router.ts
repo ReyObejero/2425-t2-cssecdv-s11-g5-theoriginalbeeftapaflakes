@@ -6,7 +6,7 @@ import { createOrderSchema, updateOrderStatusSchema } from '@/validations';
 const orderRouter = Router();
 
 orderRouter.post('/', authenticate, validate(createOrderSchema), orderController.createOrder);
-orderRouter.get('/', authenticate, protect, orderController.getOrders);
+orderRouter.get('/', authenticate, protect, orderController.getAllOrders);
 orderRouter.get('/me', authenticate, orderController.getAuthenticatedUserOrders);
 orderRouter.put('/:orderId', authenticate, validate(updateOrderStatusSchema), orderController.updateOrderStatus);
 
