@@ -1,4 +1,5 @@
 import { type User } from '@prisma/client';
+import { hash } from 'argon2';
 import createError from 'http-errors';
 import { errorMessages, statusCodes } from '@/constants';
 import { prismaClient } from '@/database';
@@ -36,6 +37,21 @@ export const userService = {
 
     getUsers: async (): Promise<User[]> => {
         return await prismaClient.user.findMany();
+    },
+
+    resetPassword: async (userId: number, newPassword: string): Promise<User> => {
+        const user = userService.getUserById(userId);
+
+        if (!userId || !newPassword || !user) {
+            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.INVALID_INPUT);
+        }
+
+        const hashedPassword = await hash(newPassword);
+
+        return await prismaClient.user.update({
+            where: { id: userId },
+            data: { password: hashedPassword },
+        });
     },
 
     updateUserAddress: async (username: string, address: string): Promise<User> => {

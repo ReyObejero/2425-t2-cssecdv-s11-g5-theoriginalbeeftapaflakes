@@ -24,6 +24,17 @@ export const userController = {
         });
     }),
 
+    resetPassword: asyncRequestHandlerWrapper(async (req: Request, res: Response): Promise<void> => {
+        const { newPassword } = req.body;
+        const userId = req!.jwtPayload!.userId;
+
+        const user = await userService.resetPassword(userId, newPassword);
+
+        return sendResponse(res, statusCodes.successful.OK, {
+            data: user,
+        });
+    }),
+
     updateUser: asyncRequestHandlerWrapper(async (req: Request, res: Response): Promise<void> => {
         const { address } = req.body;
         const user = await userService.updateUserAddress(req.params.username, address);
