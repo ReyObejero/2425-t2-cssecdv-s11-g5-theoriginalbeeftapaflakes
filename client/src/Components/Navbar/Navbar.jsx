@@ -98,7 +98,11 @@ const Navbar = () => {
                     </DropdownButton>
 
                     {user?.role === 'PRODUCT_MANAGER' && (
-                        <DropdownButton
+                        <li className="nav-item" onClick={() => redirectTo('/product-management')}>
+                            Product Management
+                        </li>
+
+                        /*<DropdownButton
                             id="navbar-admin"
                             title="Manager Dashboard"
                             openDropdown={openDropdown}
@@ -109,6 +113,7 @@ const Navbar = () => {
                                 <button onClick={() => redirectTo('/order-management')}>Order Management</button>
                             </DropdownMenu>
                         </DropdownButton>
+                        */
                     )}
 
                     {user?.role === 'ADMIN' && (

@@ -57,70 +57,37 @@ const detailedPackageQueryArgs = {
 };
 
 export const productService = {
+    createProduct: async (data: Prisma.ProductCreateInput): Promise<DetailedProduct> => {
+        return await prismaClient.product.create({
+            data,
+            ...detailedProductQueryArgs,
+        });
+    },
+
+    updateProduct: async (productId: number, data: Prisma.ProductUpdateInput): Promise<DetailedProduct> => {
+        return await prismaClient.product.update({
+            where: { id: productId },
+            data,
+            ...detailedProductQueryArgs,
+        });
+    },
+
     deletePackage: async (productId: number, packageId: number): Promise<DetailedPackage> => {
-        if (!productId) {
-            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.PRODUCT_ID_INVALID);
+        if (!productId || !packageId) {
+            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.INVALID_INPUT);
         }
-
-        if (!packageId) {
-            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.PACKAGE_ID_INVALID);
-        }
-
-        const product = await productService.getProduct(productId);
-        if (!product) {
-            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.PRODUCT_ID_INVALID);
-        }
-
-        const productPackage = await productService.getPackage(packageId);
+        const productPackage = await prismaClient.package.findUnique({
+            where: { id: packageId },
+            ...detailedPackageQueryArgs,
+        });
         if (!productPackage) {
-            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.PACKAGE_ID_INVALID);
+            throw createError(statusCodes.clientError.NOT_FOUND, errorMessages.INVALID_INPUT);
         }
-
-        if (productPackage.productId != product.id) {
-            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.PRODUCT_ID_INVALID);
-        }
-
         await prismaClient.package.delete({ where: { id: packageId } });
-
-        if (product.packages.length - 1 === 0) {
-            await productService.deleteProduct(productId);
-        }
-
         return productPackage;
     },
 
-    deletePackages: async (productId: number): Promise<DetailedPackage[]> => {
-        if (!productId) {
-            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.PRODUCT_ID_INVALID);
-        }
-
-        const productPackages = await productService.getPackages(productId);
-
-        await productService.deletePackages(productId);
-
-        return productPackages;
-    },
-
-    deleteProduct: async (productId: number): Promise<DetailedProduct> => {
-        if (!productId) {
-            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.PRODUCT_ID_INVALID);
-        }
-
-        const product = await productService.getProduct(productId);
-        if (!product) {
-            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.PRODUCT_ID_INVALID);
-        }
-
-        await prismaClient.product.delete({ where: { id: productId } });
-
-        return product;
-    },
-
     getPackage: async (packageId: number): Promise<DetailedPackage | null> => {
-        if (!packageId) {
-            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.PACKAGE_ID_INVALID);
-        }
-
         return await prismaClient.package.findUnique({
             where: { id: packageId },
             ...detailedPackageQueryArgs,
@@ -128,10 +95,6 @@ export const productService = {
     },
 
     getPackages: async (productId: number): Promise<DetailedPackage[]> => {
-        if (!productId) {
-            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.PRODUCT_ID_INVALID);
-        }
-
         return await prismaClient.package.findMany({
             where: { productId },
             ...detailedPackageQueryArgs,
@@ -139,10 +102,6 @@ export const productService = {
     },
 
     getProduct: async (productId: number): Promise<DetailedProduct | null> => {
-        if (!productId) {
-            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.PRODUCT_ID_INVALID);
-        }
-
         return await prismaClient.product.findUnique({
             where: { id: productId },
             ...detailedProductQueryArgs,
@@ -155,14 +114,15 @@ export const productService = {
         });
     },
 
-    updateProductAverageRating: async (productId: number): Promise<DetailedProduct> => {
-        if (!productId || !(await productService.getProduct(productId))) {
-            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.PRODUCT_ID_INVALID);
-        }
+    deleteProduct: async (productId: number): Promise<DetailedProduct> => {
+        const product = await prismaClient.product.delete({ where: { id: productId }, ...detailedProductQueryArgs });
+        return product;
+    },
 
+    updateProductAverageRating: async (productId: number): Promise<DetailedProduct> => {
         const reviews = await reviewService.getReviews();
         const sumRatings = reviews.reduce((accumulator, currentReview) => {
-            return (accumulator += currentReview.rating);
+            return accumulator + currentReview.rating;
         }, 0);
 
         return await prismaClient.product.update({

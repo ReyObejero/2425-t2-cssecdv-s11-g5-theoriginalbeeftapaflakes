@@ -13,7 +13,9 @@ export const Protect = ({ element, requiredRole }) => {
         return <Navigate to="/login" />;
     }
 
-    if (requiredRole && userRole !== requiredRole) {
+    const isRoleValid = Array.isArray(requiredRole) ? requiredRole.includes(userRole) : userRole === requiredRole;
+
+    if (requiredRole && !isRoleValid) {
         return <Navigate to="/" />;
     }
 

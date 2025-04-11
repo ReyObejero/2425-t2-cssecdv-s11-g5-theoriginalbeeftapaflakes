@@ -15,7 +15,7 @@ function EditModal({ isOpen, onClose, product, onSave }) {
             console.log('Product Data:', product);
 
             const bottlesPerFlavorString = product.bottlesPerFlavor
-                ? product.bottlesPerFlavor.map(bottle => `${bottle.flavor}: ${bottle.quantity}`).join('\n')
+                ? product.bottlesPerFlavor.map((bottle) => `${bottle.flavor}: ${bottle.quantity}`).join('\n')
                 : '';
 
             const updatedProduct = {
@@ -41,23 +41,23 @@ function EditModal({ isOpen, onClose, product, onSave }) {
 
         // If the input is of type number and the value is negative, set it to 0
         if (e.target.type === 'number' && parseFloat(value) < 0) {
-            return setEditedProduct(prevState => ({
+            return setEditedProduct((prevState) => ({
                 ...prevState,
-                [name]: 0
+                [name]: 0,
             }));
         }
 
         // Otherwise, update the state normally
-        setEditedProduct(prevState => ({
+        setEditedProduct((prevState) => ({
             ...prevState,
-            [name]: value
+            [name]: value,
         }));
     };
 
     const handleSubmit = () => {
         if (editedProduct.bottlesPerFlavor) {
-            const bottlesPerFlavorArray = editedProduct.bottlesPerFlavor.split('\n').map(line => {
-                const [flavor, quantity] = line.split(':').map(part => part.trim());
+            const bottlesPerFlavorArray = editedProduct.bottlesPerFlavor.split('\n').map((line) => {
+                const [flavor, quantity] = line.split(':').map((part) => part.trim());
                 return { flavor, quantity: parseInt(quantity, 10) };
             });
 
@@ -88,7 +88,7 @@ function EditModal({ isOpen, onClose, product, onSave }) {
                 }
 
                 const imageUrl = response.data;
-                setEditedProduct(prevState => ({
+                setEditedProduct((prevState) => ({
                     ...prevState,
                     productImage: imageUrl,
                 }));
@@ -110,7 +110,13 @@ function EditModal({ isOpen, onClose, product, onSave }) {
                             <tr key={key}>
                                 <td>{key.charAt(0).toUpperCase() + key.slice(1)}:</td>
                                 <td>
-                                    {['productName', 'description', 'packageOption', 'bottlesPerFlavor', 'ingredients'].includes(key) ? (
+                                    {[
+                                        'productName',
+                                        'description',
+                                        'packageOption',
+                                        'bottlesPerFlavor',
+                                        'ingredients',
+                                    ].includes(key) ? (
                                         <textarea
                                             name={key}
                                             value={value}
@@ -129,7 +135,11 @@ function EditModal({ isOpen, onClose, product, onSave }) {
                                         </div>
                                     ) : (
                                         <input
-                                            type={key === 'price' || key === 'inventory' || key === 'packageSize' ? 'number' : 'text'}
+                                            type={
+                                                key === 'price' || key === 'inventory' || key === 'packageSize'
+                                                    ? 'number'
+                                                    : 'text'
+                                            }
                                             name={key}
                                             value={value}
                                             onChange={handleChange}
@@ -142,9 +152,13 @@ function EditModal({ isOpen, onClose, product, onSave }) {
                         ))}
                     </tbody>
                 </table>
-                <div className='modal-buttons'>
-                    <button className="modal-save-inventory-btn" onClick={handleSubmit}>SAVE</button>
-                    <button className="modal-cancel-inventory-btn" onClick={onClose}>CANCEL</button>
+                <div className="modal-buttons">
+                    <button className="modal-save-inventory-btn" onClick={handleSubmit}>
+                        SAVE
+                    </button>
+                    <button className="modal-cancel-inventory-btn" onClick={onClose}>
+                        CANCEL
+                    </button>
                 </div>
             </div>
         </div>
@@ -174,15 +188,15 @@ function AddModal({ isOpen, onClose, onSave }) {
         const { name, value } = e.target;
 
         if (e.target.type === 'number' && parseFloat(value) < 0) {
-            return setNewProduct(prevState => ({
+            return setNewProduct((prevState) => ({
                 ...prevState,
-                [name]: 0
+                [name]: 0,
             }));
         }
 
-        setNewProduct(prevState => ({
+        setNewProduct((prevState) => ({
             ...prevState,
-            [name]: value
+            [name]: value,
         }));
     };
 
@@ -202,8 +216,8 @@ function AddModal({ isOpen, onClose, onSave }) {
 
     const handleSubmit = () => {
         if (newProduct.bottlesPerFlavor) {
-            const bottlesPerFlavorArray = newProduct.bottlesPerFlavor.split('\n').map(line => {
-                const [flavor, quantity] = line.split(':').map(part => part.trim());
+            const bottlesPerFlavorArray = newProduct.bottlesPerFlavor.split('\n').map((line) => {
+                const [flavor, quantity] = line.split(':').map((part) => part.trim());
                 return { flavor, quantity: parseInt(quantity, 10) };
             });
 
@@ -228,32 +242,50 @@ function AddModal({ isOpen, onClose, onSave }) {
                             <tr key={key}>
                                 <td>{key.charAt(0).toUpperCase() + key.slice(1)}:</td>
                                 <td>
-                                    {['productName', 'description', 'packageOption', 'bottlesPerFlavor', 'ingredients'].includes(key) ? (
+                                    {[
+                                        'productName',
+                                        'description',
+                                        'packageOption',
+                                        'bottlesPerFlavor',
+                                        'ingredients',
+                                    ].includes(key) ? (
                                         <textarea
                                             name={key}
                                             value={value}
                                             onChange={handleChange}
                                             placeholder={
-                                                key === 'productName' ? "e.g., Sub-Reseller Package" :
-                                                key === 'description' ? "e.g., Discover convenience and profit with our..." :
-                                                key === 'packageOption' ? "e.g., Package A" :
-                                                key === 'bottlesPerFlavor' ? "<Flavor>: <Quantity> e.g.,\nClassic: 5\nSpicy: 5" :
-                                                key === 'ingredients' ? "e.g., Beef, Salt, Pepper..." :
-                                                "Placeholder"
+                                                key === 'productName'
+                                                    ? 'e.g., Sub-Reseller Package'
+                                                    : key === 'description'
+                                                      ? 'e.g., Discover convenience and profit with our...'
+                                                      : key === 'packageOption'
+                                                        ? 'e.g., Package A'
+                                                        : key === 'bottlesPerFlavor'
+                                                          ? '<Flavor>: <Quantity> e.g.,\nClassic: 5\nSpicy: 5'
+                                                          : key === 'ingredients'
+                                                            ? 'e.g., Beef, Salt, Pepper...'
+                                                            : 'Placeholder'
                                             }
                                             rows="3"
                                         />
                                     ) : (
                                         <input
-                                            type={key === 'price' || key === 'inventory' || key === 'packageSize' ? 'number' : 'text'}
+                                            type={
+                                                key === 'price' || key === 'inventory' || key === 'packageSize'
+                                                    ? 'number'
+                                                    : 'text'
+                                            }
                                             name={key}
                                             value={value}
                                             onChange={handleChange}
                                             placeholder={
-                                                key === 'packageSize' ? "e.g., 330" :
-                                                key === 'price' ? "e.g., 1975.0" :
-                                                key === 'inventory' ? "e.g., 10" :
-                                                "Placeholder"
+                                                key === 'packageSize'
+                                                    ? 'e.g., 330'
+                                                    : key === 'price'
+                                                      ? 'e.g., 1975.0'
+                                                      : key === 'inventory'
+                                                        ? 'e.g., 10'
+                                                        : 'Placeholder'
                                             }
                                             step={key === 'price' ? '0.01' : '1'}
                                         />
@@ -263,9 +295,13 @@ function AddModal({ isOpen, onClose, onSave }) {
                         ))}
                     </tbody>
                 </table>
-                <div className='modal-buttons'>
-                    <button className="modal-save-inventory-btn" onClick={handleSubmit}>SAVE</button>
-                    <button className="modal-cancel-inventory-btn" onClick={onClose}>CANCEL</button>
+                <div className="modal-buttons">
+                    <button className="modal-save-inventory-btn" onClick={handleSubmit}>
+                        SAVE
+                    </button>
+                    <button className="modal-cancel-inventory-btn" onClick={onClose}>
+                        CANCEL
+                    </button>
                 </div>
             </div>
         </div>
@@ -332,12 +368,14 @@ const AdminDashboard = () => {
                 console.log('Product deleted successfully');
 
                 // Remove the deleted product from the products list
-                setProducts(prevProducts => prevProducts.filter(product => !(product.id === productId && product.packageId === packageId)));
+                setProducts((prevProducts) =>
+                    prevProducts.filter((product) => !(product.id === productId && product.packageId === packageId)),
+                );
 
                 // Reset filter to show all products
                 setFilter('');
             } catch (error) {
-               setErrorMessage(error.response.data.message);
+                setErrorMessage(error.response.data.message);
             }
         }
     };
@@ -348,27 +386,27 @@ const AdminDashboard = () => {
                 const response = await axiosInstance.get(PRODUCT_URL);
                 if (response.status === 200) {
                     const productsData = response.data.data.items;
-                    const flattenedProducts = productsData.flatMap(product =>
-                        product.packages.map(packageItem => ({
+                    const flattenedProducts = productsData.flatMap((product) =>
+                        product.packages.map((packageItem) => ({
                             packageId: packageItem.id,
                             productId: product.id,
                             productName: product.name,
                             description: product.description,
                             packageOption: packageItem.name,
                             packageSize: packageItem.size,
-                            bottlesPerFlavor: packageItem.items.map(item => ({
+                            bottlesPerFlavor: packageItem.items.map((item) => ({
                                 flavor: item.flavor.name,
-                                quantity: item.quantity
+                                quantity: item.quantity,
                             })),
                             price: packageItem.price,
                             currentInventory: packageItem.currentInventory,
                             ingredients: product.ingredients,
                             image: product.imageUrl,
-                            imageId: product.imageId
-                        }))
+                            imageId: product.imageId,
+                        })),
                     );
                     setProducts(flattenedProducts);
-                } 
+                }
             } catch (error) {
                 console.error('Error fetching products:', error);
             }
@@ -397,7 +435,7 @@ const AdminDashboard = () => {
                 },
             });
 
-            if (response.status === 200)  {
+            if (response.status === 200) {
                 setSuccessMessage(response.data.message);
 
                 setIsEditModalOpen(false);
@@ -409,7 +447,7 @@ const AdminDashboard = () => {
 
     const handleAddProduct = async (newProductData) => {
         try {
-            const response = await axiosInstance.post(`${PRODUCT_URL}/add`, newProductData, {
+            const response = await axiosInstance.post(`${PRODUCT_URL}/`, newProductData, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -428,11 +466,9 @@ const AdminDashboard = () => {
         }
     };
 
-    const productNames = [...new Set(products.map(product => product.productName))];
+    const productNames = [...new Set(products.map((product) => product.productName))];
 
-    const filteredProducts = products.filter(product => 
-        filter === '' || product.productName === filter
-    );
+    const filteredProducts = products.filter((product) => filter === '' || product.productName === filter);
 
     return (
         <div className="admin-grid-container">
@@ -441,19 +477,18 @@ const AdminDashboard = () => {
                     Product Management
                     <span className="admin-filter-dropdown">
                         Filter:
-                        <select 
-                            value={filter}
-                            onChange={e => setFilter(e.target.value)}
-                        >
+                        <select value={filter} onChange={(e) => setFilter(e.target.value)}>
                             <option value="">All Products</option>
-                            {productNames.map(name => (
-                                <option key={name} value={name}>{name}</option>
+                            {productNames.map((name) => (
+                                <option key={name} value={name}>
+                                    {name}
+                                </option>
                             ))}
                         </select>
                     </span>
                 </h1>
-            {successMessage && <PopupMessage message={successMessage} type="success" />}
-            {errorMessage && <PopupMessage message={errorMessage} type="error" />}
+                {successMessage && <PopupMessage message={successMessage} type="success" />}
+                {errorMessage && <PopupMessage message={errorMessage} type="error" />}
                 <div className="admin-grid-product">
                     <div className="admin-cart-container">
                         <div className="admin-flex-container">
@@ -462,8 +497,16 @@ const AdminDashboard = () => {
                                     <div key={product.packageId} className="item">
                                         <img src={product.image} alt={product.productName} />
                                         <div className="admin-product-details">
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                <p>{product.productName} [{product.packageOption}]</p>
+                                            <div
+                                                style={{
+                                                    display: 'flex',
+                                                    justifyContent: 'space-between',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                <p>
+                                                    {product.productName} [{product.packageOption}]
+                                                </p>
                                                 <div className="product-action-buttons">
                                                     <button
                                                         className="open-product-btn"
@@ -474,7 +517,9 @@ const AdminDashboard = () => {
                                                     <button
                                                         className="admin-delete-btn"
                                                         style={{ float: 'right' }}
-                                                        onClick={() => handleDelete(product.productId, product.packageId)}
+                                                        onClick={() =>
+                                                            handleDelete(product.productId, product.packageId)
+                                                        }
                                                     >
                                                         <img src={deleteIcon} alt="delete" />
                                                     </button>
@@ -486,7 +531,12 @@ const AdminDashboard = () => {
                                                         <p>Price: </p>
                                                     </div>
                                                     <div className="admin-price-value">
-                                                        <span>{parseFloat(product.price)?.toLocaleString('en-PH', { style: 'currency', currency: 'PHP' })}</span>
+                                                        <span>
+                                                            {parseFloat(product.price)?.toLocaleString('en-PH', {
+                                                                style: 'currency',
+                                                                currency: 'PHP',
+                                                            })}
+                                                        </span>
                                                     </div>
                                                 </div>
                                                 <div className="admin-quantity-container">
@@ -494,8 +544,12 @@ const AdminDashboard = () => {
                                                         <p>Inventory: </p>
                                                     </div>
                                                     <div className="admin-quantity-value">
-                                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                            <span style={{ marginTop: '2px' }}>{product.currentInventory}</span>
+                                                        <div
+                                                            style={{ display: 'flex', justifyContent: 'space-between' }}
+                                                        >
+                                                            <span style={{ marginTop: '2px' }}>
+                                                                {product.currentInventory}
+                                                            </span>
                                                             <button
                                                                 className="edit-inventory-btn"
                                                                 style={{ marginRight: '3px' }}
@@ -512,7 +566,9 @@ const AdminDashboard = () => {
                                 ))}
                             </div>
                         </div>
-                        <button className="add-product-btn add-btn" onClick={addNewProduct}>+ Add Product</button>
+                        <button className="add-product-btn add-btn" onClick={addNewProduct}>
+                            + Add Product
+                        </button>
                     </div>
                 </div>
             </div>
@@ -522,11 +578,7 @@ const AdminDashboard = () => {
                 product={currentEditProduct}
                 onSave={saveEdits}
             />
-            <AddModal
-                isOpen={isAddModalOpen}
-                onClose={() => setIsAddModalOpen(false)}
-                onSave={handleAddProduct}
-            />
+            <AddModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} onSave={handleAddProduct} />
         </div>
     );
 };

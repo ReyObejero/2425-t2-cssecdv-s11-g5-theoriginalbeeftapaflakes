@@ -49,10 +49,12 @@ function App() {
                             element={<Protect element={<CreateAdmin />} requiredRole="ADMIN" />}
                         />
                         <Route path="/forgot-password" element={<ForgotPassword />} />
-                        <Route path="/orders" element={<Orders />} />
                         <Route path="/COS" element={<CheckoutandStatus />} />
-                        <Route path="*" element={<Error_Views/>} />
-                        <Route path="/orders" element={<Protect element={<Orders />} requiredRole="CUSTOMER" />} />
+                        <Route path="*" element={<Error_Views />} />
+                        <Route
+                            path="/orders"
+                            element={<Protect element={<Orders />} requiredRole={['CUSTOMER', 'PRODUCT_MANAGER']} />}
+                        />
                         <Route
                             path="/COS"
                             element={<Protect element={<CheckoutandStatus />} requiredRole="CUSTOMER" />}
