@@ -10,7 +10,7 @@ import { UserRole } from '@prisma/client';
 export const authenticate = (req: Request, res: Response, next: NextFunction): void => {
     const accessToken = getTokenFromHeader(req.headers['authorization']);
     if (!accessToken) {
-        logger.warn(`Authentication failed: [IP: ${req.ip}]`);
+        logger.warn(`Authentication failed for: [IP: ${req.ip}]`);
         return next(createError(statusCodes.clientError.UNAUTHORIZED, errorMessages.TOKEN_NOT_FOUND));
     }
 
@@ -19,7 +19,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction): v
         env.jwt.ACCESS_TOKEN_SECRET,
         (error: VerifyErrors | null, payload: JwtPayload | string | undefined): void => {
             if (error || !payload || typeof payload === 'string') {
-                logger.warn(`Authentication failed: [IP: ${req.ip}]`);
+                logger.warn(`Authentication failed for: [IP: ${req.ip}]`);
                 return next(createError(statusCodes.clientError.UNAUTHORIZED, errorMessages.TOKEN_INVALID));
             }
 
@@ -29,7 +29,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction): v
                 exp: payload.exp,
             };
 
-            logger.info(`Authentication successful for user ID: ${payload.userId} [IP: ${req.ip}]`);
+            logger.info(`Authentication successful for user [IP: ${req.ip}]`);
             return next();
         },
     );
@@ -40,7 +40,7 @@ export const protect =
     (req: Request, res: Response, next: NextFunction): void => {
         if (req.jwtPayload?.role !== role) {
             logger.warn(
-                `Access control failure: User ID ${req.jwtPayload?.userId} tried to access ${req.originalUrl} with insufficient role [IP: ${req.ip}]`,
+                `Access control failure: User tried to access ${req.originalUrl} with insufficient role [IP: ${req.ip}]`,
             );
             return next(createError(statusCodes.clientError.FORBIDDEN, errorMessages.ACCESS_DENIED));
         }
