@@ -6,6 +6,7 @@ import { prismaClient } from '@/database';
 import { generateAccessToken, generateRefreshToken } from '@/utils';
 import { tokenService } from './token.service';
 import { userService } from './user.service';
+import { logger } from '@/config';
 
 interface LoginInput {
     username: string;
@@ -22,17 +23,15 @@ export const authService = {
     register: async (input: RegisterInput, role?: UserRole): Promise<User> => {
         const { username, email, password } = input;
 
-        if (
-            !username ||
-            !email ||
-            !password ||
-            (await userService.getUserByUsername(username)) ||
-            (await userService.getUserByEmail(email))
-        ) {
+        const usernameTaken = await userService.getUserByUsername(username);
+        const emailTaken = await userService.getUserByEmail(email);
+
+        if (!username || !email || !password || usernameTaken || emailTaken) {
+            logger.warn('register: Registration failed.');
             throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.INVALID_INPUT);
         }
 
-        return await prismaClient.user.create({
+        const user = await prismaClient.user.create({
             data: {
                 username,
                 email,
@@ -41,6 +40,9 @@ export const authService = {
                 ...(role && role !== UserRole.CUSTOMER && { role }),
             },
         });
+
+        logger.info('register: User created.');
+        return user;
     },
 
     login: async (
@@ -49,9 +51,15 @@ export const authService = {
     ): Promise<{ accessToken: string; refreshToken: string; user: User }> => {
         const { username, password } = input;
 
+        if (!username || !password) {
+            logger.warn('login: Login failed.');
+            throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.INVALID_CREDENTIALS);
+        }
+
         const user = await userService.getUserByUsername(username);
 
-        if (!username || !password || !user || !(await verify(user.password, password))) {
+        if (!user) {
+            logger.warn('login: Login failed.');
             throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.INVALID_CREDENTIALS);
         }
 
@@ -59,17 +67,20 @@ export const authService = {
 
         if (user.lockoutUntil && user.lockoutUntil > now) {
             const minutesLeft = Math.ceil((user.lockoutUntil.getTime() - now.getTime()) / 60000);
+            logger.warn(`login: Account locked (${minutesLeft} mins remaining).`);
             throw createError(statusCodes.clientError.FORBIDDEN, errorMessages.ACCOUNT_LOCKED);
         }
 
         const isPasswordValid = await verify(user.password, password);
         if (!isPasswordValid) {
             const failedAttempts = user.failedLoginAttempts + 1;
-
             const updates: any = { failedLoginAttempts: failedAttempts };
 
             if (failedAttempts >= 5) {
                 updates.lockoutUntil = new Date(now.getTime() + LOGIN_LOCKOUT_DURATION_MINUTES * 60 * 1000);
+                logger.warn('login: Too many failed attempts, lockout triggered.');
+            } else {
+                logger.warn('login: Login failed.');
             }
 
             await prismaClient.user.update({
@@ -89,11 +100,11 @@ export const authService = {
         });
 
         if (refreshToken) {
-            const existingRefreshToken = await tokenService.getRefreshTokenByToken(refreshToken);
-            if (!existingRefreshToken || existingRefreshToken.userId != user.id) {
+            const existing = await tokenService.getRefreshTokenByToken(refreshToken);
+            if (!existing || existing.userId !== user.id) {
                 await tokenService.deleteRefreshTokensByUserId(user.id);
             } else {
-                await tokenService.deleteRefreshTokenByToken(existingRefreshToken.token);
+                await tokenService.deleteRefreshTokenByToken(existing.token);
             }
         }
 
@@ -101,6 +112,7 @@ export const authService = {
         const newRefreshToken = generateRefreshToken(user.id, user.role);
         await tokenService.createRefreshToken(user.id, newRefreshToken);
 
+        logger.info('login: Login successful.');
         return {
             accessToken,
             refreshToken: newRefreshToken,
@@ -110,16 +122,19 @@ export const authService = {
 
     logout: async (userId: number): Promise<User> => {
         if (!userId) {
+            logger.warn('logout: Logout failed.');
             throw createError(statusCodes.clientError.NOT_FOUND, errorMessages.USER_ID_INVALID);
         }
 
         const user = await userService.getUserById(userId);
         if (!user) {
+            logger.warn('logout: Logout failed.');
             throw createError(statusCodes.clientError.NOT_FOUND, errorMessages.USER_ID_INVALID);
         }
 
         await tokenService.deleteRefreshTokensByUserId(userId);
 
+        logger.info('logout: User logged out.');
         return user;
     },
 };

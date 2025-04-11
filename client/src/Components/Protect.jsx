@@ -2,8 +2,20 @@ import React, { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import { AuthContext } from '../contexts';
 
-export const Protect = ({ element }) => {
-    const { isLoggedIn } = useContext(AuthContext);
+export const Protect = ({ element, requiredRole }) => {
+    const { isLoggedIn, userRole, isLoading } = useContext(AuthContext);
 
-    return isLoggedIn ? element : <Navigate to="/login" />;
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (!isLoggedIn) {
+        return <Navigate to="/login" />;
+    }
+
+    if (requiredRole && userRole !== requiredRole) {
+        return <Navigate to="/" />;
+    }
+
+    return element;
 };

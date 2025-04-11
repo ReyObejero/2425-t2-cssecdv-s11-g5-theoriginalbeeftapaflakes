@@ -26,6 +26,8 @@ const CartItems = () => {
     });
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
+    const [checkoutError, setCheckoutError] = useState('');
+    const [checkoutLoading, setCheckoutLoading] = useState(false); // new loading state
 
     const fetchCartItems = async () => {
         try {
@@ -107,12 +109,16 @@ const CartItems = () => {
 
     const handleCheckout = async () => {
         document.body.classList.add('modal-open');
+        setCheckoutError('');
+        setCheckoutLoading(true); // Start loading
         setShowModal(true);
     };
 
     const handleCloseModal = () => {
         document.body.classList.remove('modal-open');
         setShowModal(false);
+        setCheckoutError('');
+        setCheckoutLoading(false); // Stop loading
     };
 
     const handleConfirmCheckout = async () => {
@@ -124,7 +130,7 @@ const CartItems = () => {
         const { cardNumber, expiryDate, securityCode, deliveryAddress } = paymentDetails;
         if (!cardNumber || !expiryDate || !securityCode || !deliveryAddress) {
             console.error('Payment details are incomplete');
-            alert('Please complete all payment details');
+            setCheckoutError('Please complete all payment details');
             return;
         }
 
@@ -152,13 +158,15 @@ const CartItems = () => {
             const orderResponse = await axiosInstance.post(`${ORDERS_URL}`, paymentInfo);
             const deleteCartItemResponse = await axiosInstance.delete(`${CARTS_URL}/items/${selectedItem.id}`);
 
+            setCheckoutLoading(false); // Stop loading when done
             document.body.classList.remove('modal-open');
             setShowModal(false);
 
             fetchCartItems();
         } catch (error) {
             console.log('Error during checkout:', error);
-            alert('An error occurred during checkout. Please try again.');
+            setCheckoutError('Checkout failed. Please try again.');
+            setCheckoutLoading(false); // Stop loading in case of error
         }
     };
 
@@ -184,7 +192,9 @@ const CartItems = () => {
                     <div className="cart-container">
                         <div className="flex-container">
                             <div className="items-container">
-                                {cart.items.length > 0 ? (
+                                {loading ? (
+                                    <p>Loading your cart...</p> // Loading message while cart is being fetched
+                                ) : cart.items.length > 0 ? (
                                     cart.items.map((item, index) => {
                                         const product = products.find((product) => product.id === item.product.id);
                                         return (
@@ -242,11 +252,8 @@ const CartItems = () => {
                                         );
                                     })
                                 ) : (
-                                    <p>Your cart is empty</p>
+                                    <p>Your cart is empty</p> // Will show if the cart is empty after loading
                                 )}
-                                <Link to={'/products'}>
-                                    <button className="btn add-btn">Add Item</button>
-                                </Link>
                             </div>
                             <div className="checkout-container">
                                 <h2>Order Summary</h2>
@@ -272,6 +279,8 @@ const CartItems = () => {
                                 >
                                     Checkout
                                 </button>
+                                {checkoutLoading && <p className="loading-message">Checking out, please wait...</p>}{' '}
+                                {/* loading message */}
                             </div>
                         </div>
                     </div>
@@ -292,6 +301,7 @@ const CartItems = () => {
                             <strong>₱{parseFloat(selectedItem.price * selectedItem.quantity).toFixed(2)}</strong>
                         </p>
                     )}
+                    {checkoutError && <p className="checkout-error-message">{checkoutError}</p>}
                     <form>
                         <div className="form-group">
                             <label htmlFor="cardNumber">Card Number</label>
