@@ -4,29 +4,13 @@ import { verify, type JwtPayload, type VerifyErrors } from 'jsonwebtoken';
 import { env } from '@/config';
 import { errorMessages, statusCodes } from '@/constants';
 import { getTokenFromHeader } from '@/utils';
+import { logger } from '@/config';
 import { UserRole } from '@prisma/client';
 
-/**
- * Middleware function to authenticate the user with the JWT access token in the HTTP cookies. It verifies the token and
- * extracts the payload, which is then attached to the `req` object under the `jwtPayload` property. If the token is not
- * found or is invalid, control is passed to the `next` function with an appropriate error.
- *
- * @example
- * ```
- * import { authenticate } from '/path/to/verify-auth';
- *
- * app.post('/some-endpoint', authenticate, async (req, res) => {
- *     // Some action...
- * });
- * ```
- *
- * @param req - The request object
- * @param res - The response object
- * @param next - The next function
- */
 export const authenticate = (req: Request, res: Response, next: NextFunction): void => {
     const accessToken = getTokenFromHeader(req.headers['authorization']);
     if (!accessToken) {
+        logger.warn(`Authentication failed: [IP: ${req.ip}]`);
         return next(createError(statusCodes.clientError.UNAUTHORIZED, errorMessages.TOKEN_NOT_FOUND));
     }
 
@@ -35,6 +19,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction): v
         env.jwt.ACCESS_TOKEN_SECRET,
         (error: VerifyErrors | null, payload: JwtPayload | string | undefined): void => {
             if (error || !payload || typeof payload === 'string') {
+                logger.warn(`Authentication failed: [IP: ${req.ip}]`);
                 return next(createError(statusCodes.clientError.UNAUTHORIZED, errorMessages.TOKEN_INVALID));
             }
 
@@ -44,23 +29,20 @@ export const authenticate = (req: Request, res: Response, next: NextFunction): v
                 exp: payload.exp,
             };
 
+            logger.info(`Authentication successful for user ID: ${payload.userId} [IP: ${req.ip}]`);
             return next();
         },
     );
 };
 
-/**
- * Middleware function to protect routes against non-admin access with the `role` property in `req.jwtPayload`.
- *
- * @param req - The request object
- * @param res - The response object
- * @param next - The next function
- */
 export const protect =
     (role: UserRole): RequestHandler =>
     (req: Request, res: Response, next: NextFunction): void => {
         if (req.jwtPayload?.role !== role) {
-            next(createError(statusCodes.clientError.FORBIDDEN, errorMessages.ACCESS_DENIED));
+            logger.warn(
+                `Access control failure: User ID ${req.jwtPayload?.userId} tried to access ${req.originalUrl} with insufficient role [IP: ${req.ip}]`,
+            );
+            return next(createError(statusCodes.clientError.FORBIDDEN, errorMessages.ACCESS_DENIED));
         }
 
         return next();

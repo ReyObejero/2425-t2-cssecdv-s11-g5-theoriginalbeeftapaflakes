@@ -17,6 +17,7 @@ import OrderManagement from './Components/Views/OrderManagement/OrderManagement_
 import CheckoutandStatus from './Components/Views/CheckoutandStatus/CS.jsx';
 import { AuthProvider } from './providers';
 import { Orders } from './Components/Orders/orders.jsx';
+import { Protect } from './Components/Protect.jsx';
 
 function App() {
     return (
@@ -29,16 +30,28 @@ function App() {
                         <Route path="/products/:productId" element={<ProductPage />} />
                         <Route path="/products" element={<Products category="list" />} />
                         <Route path="/about/*" element={<About />} />
-                        <Route path="/product-management" element={<AdminDashboard />} />
-                        <Route path="/order-management" element={<OrderManagement />} />
-                        <Route path="/cart" element={<Cart />} />
+                        <Route
+                            path="/product-management"
+                            element={<Protect element={<AdminDashboard />} requiredRole="PRODUCT_MANAGER" />}
+                        />
+                        <Route
+                            path="/order-management"
+                            element={<Protect element={<OrderManagement />} requiredRole="PRODUCT_MANAGER" />}
+                        />
+                        <Route path="/cart" element={<Protect element={<Cart />} requiredRole="CUSTOMER" />} />
                         <Route path="/productlist" element={<ProductList />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
-                        <Route path="/createadmin" element={<CreateAdmin />} />
+                        <Route
+                            path="/createadmin"
+                            element={<Protect element={<CreateAdmin />} requiredRole="ADMNI" />}
+                        />
                         <Route path="/forgot-password" element={<ForgotPassword />} />
-                        <Route path="/orders" element={<Orders />} />
-                        <Route path="/COS" element={<CheckoutandStatus />} />
+                        <Route path="/orders" element={<Protect element={<Orders />} requiredRole="CUSTOMER" />} />
+                        <Route
+                            path="/COS"
+                            element={<Protect element={<CheckoutandStatus />} requiredRole="CUSTOMER" />}
+                        />
                     </Routes>
                 </BrowserRouter>
             </div>

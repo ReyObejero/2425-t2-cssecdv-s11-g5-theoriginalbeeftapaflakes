@@ -3,7 +3,6 @@ import createError from 'http-errors';
 import { env } from '@/config';
 import { errorMessages, statusCodes } from '@/constants';
 import { prismaClient } from '@/database';
-import { generatePayPalAccessToken } from '@/utils';
 import { productService } from './product.service';
 import { userService } from './user.service';
 
@@ -65,38 +64,25 @@ export const orderService = {
             data: { userId, productId, packageId, quantity, price },
             ...detailedOrderQueryArgs,
         });
-        const response = await fetch(`${env.paypal.SANDBOX_BASE_URL}/v2/checkout/orders`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'PayPal-Request-Id': order.id.toString(),
-                Authorization: `Bearer ${await generatePayPalAccessToken()}`,
-            },
-            body: JSON.stringify({
-                intent: 'CAPTURE',
-                purchase_units: [
-                    {
-                        amount: {
-                            currency_code: 'PHP',
-                            value: price.toString(),
-                        },
-                    },
-                ],
-                payment_source: {
-                    card: creditCard,
-                },
-            }),
-        });
-        const data = await response.json();
 
-        if (response.status !== 200 && response.status !== 201) {
+        const paymentSuccess = await orderService.simulateCardPayment(creditCard, price);
+
+        if (!paymentSuccess) {
             await orderService.deleteOrder(order.id);
             throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.PAYMENT_FAILED);
         }
 
         await orderService.updateOrderStatus(userId, order.id, 'CONFIRMED', new Date());
 
-        return await orderService.updatePayPalOrderId(order.id, data.id);
+        return order;
+    },
+
+    simulateCardPayment: async (card: any, amount: number): Promise<boolean> => {
+        if (!card || !card.number || !card.expiry || !card.security_code) {
+            return false;
+        }
+
+        return true;
     },
 
     getOrder: async (orderId: number): Promise<DetailedOrder | null> => {
