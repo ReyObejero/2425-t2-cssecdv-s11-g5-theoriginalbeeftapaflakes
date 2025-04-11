@@ -33,18 +33,41 @@ h2 {
     margin-bottom: 5px;
 }
 
-.register-input-group input {
+.register-input-field {
     width: 100%;
     padding: 10px;
     border: 1px solid #DDD;
-}
-
-.register-input-field {
-    width: 100%;
     box-sizing: border-box;
-    margin-bottom: 16px;
+    margin-bottom: 4px;
 }
 
+/* Error */
+.error-message {
+    color: #D8000C;
+    background-color: #FFD2D2;
+    padding: 5px 8px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    margin-top: 4px;
+}
+
+/* Success box */
+.success-message {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+    padding: 12px 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.success-big-box {
+    font-size: 1.1rem;
+}
+
+/* Button */
 .register-button {
     width: 100%;
     padding: 10px;
@@ -54,34 +77,78 @@ h2 {
     cursor: pointer;
     font-size: 16px;
     font-weight: bold;
+    margin-top: 10px;
 }
 
 .register-button:hover {
     background-color: #555;
 }
 
+/* Password Rules Box */
+.password-requirements-box {
+    margin-top: 10px;
+}
+
+.password-requirements-box h4 {
+    margin-bottom: 5px;
+}
+
+.password-requirements-box ul {
+    padding-left: 20px;
+    margin: 0;
+}
+
+/* Login link container */
+.login-link-container {
+    margin-top: 1rem;
+    text-align: center;
+}
+
 .login {
-    color: #000000;
+    color: #0066cc;
     text-decoration: none;
-    display: inline-block;
-    margin-top: 0.5rem;
+    font-weight: 500;
 }
 
 .login:hover {
     text-decoration: underline;
 }
 
-.error-message {
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 0;
-    color: red;
+/* Password input wrapper to position button on the right */
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #0066cc;
+    cursor: pointer;
+    font-size: 14px;
     font-weight: bold;
 }
 
-.login-error-message {
-    text-align: center;
-    
-    color: red;
-    font-weight: bold;
+.password-toggle-btn:hover {
+    text-decoration: underline;
+}
+
+/* Submit button wrapper for centering the button */
+.submit-button-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    .form-container {
+        width: 90%;
+        padding: 20px;
+    }
 }

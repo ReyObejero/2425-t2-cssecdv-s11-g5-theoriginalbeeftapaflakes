@@ -13,14 +13,15 @@ export const loginSchema = z.object({
  *
  * This schema enforces the password complexity and length standards outlined in the DLSU
  * Active Directory (AD) with some modifications. The specific requirements are listed below:
- * - Minimum length should be at least 8
- * - Number of special characters to include 1
+ * - Minimum length should be at least 15 
+ * - Must start with a letter
  * - Must contain at least 1 upper case character(s)
  * - Number of numerals to include 1
  * - Must contain at least 1 lower case character(s)
- *
- *
- * Password regex is adopted from: {@link https://stackoverflow.com/a/21456918}
+ * - Number of special characters to include 2
+ * - Must not contain any character more than 2 times consecutively
+ * 
+ * Password regex is adapted from DLSU's Active Directory
  */
 export const registerSchema = z.object({
     body: z.object({
@@ -31,8 +32,9 @@ export const registerSchema = z.object({
         password: z
             .string({ message: errorMessages.INVALID_INPUT })
             .min(MIN_PASSWORD_LENGTH, { message: errorMessages.INVALID_INPUT })
-            .regex(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'), {
+            .regex(new RegExp('^(?=[A-Za-z])(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=(?:.*[^A-Za-z0-9]){2,})(?!.*(.)\\1\\1).{15,}$'), {
                 message: errorMessages.INVALID_INPUT,
             }),
     }),
 });
+
