@@ -18,6 +18,7 @@ import CheckoutandStatus from './Components/Views/CheckoutandStatus/CS.jsx';
 import { AuthProvider } from './providers';
 import { Orders } from './Components/Orders/orders.jsx';
 import { Protect } from './Components/Protect.jsx';
+import { Logs } from './Components/Views/Logs/Logs.jsx';
 
 function App() {
     return (
@@ -44,7 +45,7 @@ function App() {
                         <Route path="/register" element={<Register />} />
                         <Route
                             path="/createadmin"
-                            element={<Protect element={<CreateAdmin />} requiredRole="ADMNI" />}
+                            element={<Protect element={<CreateAdmin />} requiredRole="ADMIN" />}
                         />
                         <Route path="/forgot-password" element={<ForgotPassword />} />
                         <Route path="/orders" element={<Protect element={<Orders />} requiredRole="CUSTOMER" />} />
@@ -52,6 +53,7 @@ function App() {
                             path="/COS"
                             element={<Protect element={<CheckoutandStatus />} requiredRole="CUSTOMER" />}
                         />
+                        <Route path="/logs" element={<Protect element={<Logs />} requiredRole="ADMIN" />} />
                     </Routes>
                 </BrowserRouter>
             </div>

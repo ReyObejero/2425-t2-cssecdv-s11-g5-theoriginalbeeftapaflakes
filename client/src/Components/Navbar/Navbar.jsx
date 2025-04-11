@@ -76,8 +76,12 @@ const Navbar = () => {
             </div>
             <div className="nav-right">
                 <ul className="nav-menu">
-                    <li className="nav-item" onClick={() => redirectTo('/')}>Home</li>
-                    <li className="nav-item" onClick={() => redirectTo('/products')}>Products</li>
+                    <li className="nav-item" onClick={() => redirectTo('/')}>
+                        Home
+                    </li>
+                    <li className="nav-item" onClick={() => redirectTo('/products')}>
+                        Products
+                    </li>
 
                     <DropdownButton
                         id="about"
@@ -93,10 +97,10 @@ const Navbar = () => {
                         </DropdownMenu>
                     </DropdownButton>
 
-                    {user?.role === 'ADMIN' && (
+                    {user?.role === 'PRODUCT_MANAGER' && (
                         <DropdownButton
                             id="navbar-admin"
-                            title="Admin Dashboard"
+                            title="Manager Dashboard"
                             openDropdown={openDropdown}
                             onToggle={handleDropdownToggle}
                         >
@@ -106,6 +110,12 @@ const Navbar = () => {
                             </DropdownMenu>
                         </DropdownButton>
                     )}
+
+                    {user?.role === 'ADMIN' && (
+                        <li className="nav-item" onClick={() => redirectTo('/logs')}>
+                            Admin Logs
+                        </li>
+                    )}
                 </ul>
 
                 <div className="nav-login-cart">
@@ -113,7 +123,9 @@ const Navbar = () => {
                     <div className="nav-cart-count">{cartItemCount}</div>
                     <DropdownButton
                         id="user"
-                        title={<img src={user?.role === 'ADMIN' ? userAdmin : userIcon} alt="User" className="user-img" />}
+                        title={
+                            <img src={user?.role === 'ADMIN' ? userAdmin : userIcon} alt="User" className="user-img" />
+                        }
                         openDropdown={openDropdown}
                         onToggle={handleDropdownToggle}
                     >

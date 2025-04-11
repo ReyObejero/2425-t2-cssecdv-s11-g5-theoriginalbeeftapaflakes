@@ -3,6 +3,7 @@ import createError from 'http-errors';
 import { errorMessages, statusCodes } from '@/constants';
 import { authRouter } from './auth.router';
 import { cartRouter } from './cart.router';
+import { logsRouter } from './logs.router';
 import { orderRouter } from './order.router';
 import { productRouter } from './product.router';
 import { reportRouter } from './report.router';
@@ -13,6 +14,7 @@ import { userRouter } from './user.router';
 export const mountRoutes = (app: Application): void => {
     app.use('/auth', authRouter);
     app.use('/carts', cartRouter);
+    app.use('/logs', logsRouter);
     app.use('/orders', orderRouter);
     app.use('/products', productRouter);
     app.use('/reports', reportRouter);

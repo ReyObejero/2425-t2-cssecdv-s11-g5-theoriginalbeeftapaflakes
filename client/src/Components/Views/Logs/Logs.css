@@ -1,0 +1,70 @@
+.logs-page {
+    padding: 2rem;
+    max-width: 1000px;
+    width: 90%;
+    margin: 0 auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f7f9fc;
+    min-height: 100vh;
+}
+
+.logs-header {
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #333;
+}
+
+.logs-table-wrapper {
+    overflow-x: auto;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+}
+
+.logs-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.logs-table thead {
+    background-color: #e9f0f5;
+}
+
+.logs-table th,
+.logs-table td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.logs-table tr:hover {
+    background-color: #f1f8ff;
+}
+
+.log-level {
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.log-level.info {
+    color: #0275d8;
+}
+
+.log-level.warning {
+    color: #f0ad4e;
+}
+
+.log-level.error {
+    color: #d9534f;
+}
+
+.log-loading,
+.log-error {
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 1.2rem;
+    color: #666;
+}
