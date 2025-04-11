@@ -48,7 +48,7 @@ export const authService = {
     login: async (
         input: LoginInput,
         refreshToken: string | null,
-    ): Promise<{ accessToken: string; refreshToken: string; user: User }> => {
+    ): Promise<{ accessToken: string; refreshToken: string; user: User; lastLogin: { lastSuccessful: Date | null; lastFailed: Date | null } }> => {
         const { username, password } = input;
 
         if (!username || !password) {
@@ -65,16 +65,34 @@ export const authService = {
 
         const now = new Date();
 
+        // Check if lockout period has expired and reset failed attempts
+        if (user.lockoutUntil && user.lockoutUntil <= now) {
+            await prismaClient.user.update({
+                where: { id: user.id },
+                data: {
+                    failedLoginAttempts: 0,
+                    lockoutUntil: null, // Clear the lockout field
+                },
+            });
+            // Update the user object in memory to reflect changes
+            user.failedLoginAttempts = 0;
+            user.lockoutUntil = null;
+        }
+
         if (user.lockoutUntil && user.lockoutUntil > now) {
             const minutesLeft = Math.ceil((user.lockoutUntil.getTime() - now.getTime()) / 60000);
             logger.warn(`login: Account locked (${minutesLeft} mins remaining).`);
             throw createError(statusCodes.clientError.FORBIDDEN, errorMessages.ACCOUNT_LOCKED);
         }
 
+        // Verify password. If invalid, update failed attempts and lastFailedLogin.
         const isPasswordValid = await verify(user.password, password);
         if (!isPasswordValid) {
             const failedAttempts = user.failedLoginAttempts + 1;
-            const updates: any = { failedLoginAttempts: failedAttempts };
+            const updates: any = { 
+                failedLoginAttempts: failedAttempts, 
+                lastFailedLogin: now 
+            };
 
             if (failedAttempts >= 5) {
                 updates.lockoutUntil = new Date(now.getTime() + LOGIN_LOCKOUT_DURATION_MINUTES * 60 * 1000);
@@ -91,14 +109,21 @@ export const authService = {
             throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.INVALID_CREDENTIALS);
         }
 
+        // Preserve current login info to send back to the user
+        const previousLastSuccessful = user.lastSuccessfulLogin || null;
+        const previousLastFailed = user.lastFailedLogin || null;
+
+        // Successful login: reset failed attempts and update lastSuccessfulLogin.
         await prismaClient.user.update({
             where: { id: user.id },
             data: {
                 failedLoginAttempts: 0,
                 lockoutUntil: null,
+                lastSuccessfulLogin: now,
             },
         });
 
+        // Handle refresh token cleanup
         if (refreshToken) {
             const existing = await tokenService.getRefreshTokenByToken(refreshToken);
             if (!existing || existing.userId !== user.id) {
@@ -117,6 +142,7 @@ export const authService = {
             accessToken,
             refreshToken: newRefreshToken,
             user,
+            lastLogin: { lastSuccessful: previousLastSuccessful, lastFailed: previousLastFailed },
         };
     },
 

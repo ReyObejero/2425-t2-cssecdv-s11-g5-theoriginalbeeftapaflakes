@@ -6,7 +6,7 @@ export const resetPasswordSchema = z.object({
         password: z
             .string({ message: errorMessages.INVALID_INPUT })
             .min(MIN_PASSWORD_LENGTH, { message: errorMessages.INVALID_INPUT })
-            .regex(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'), {
+            .regex(new RegExp('^(?=[A-Za-z])(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=(?:.*[^A-Za-z0-9]){2,})(?!.*(.)\\1\\1).{15,}$'), {
                 message: errorMessages.INVALID_INPUT,
             }),
     }),

@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
-import { AUTH_URL, USERS_URL } from '../../API/constants.js';
+import { AUTH_URL } from '../../API/constants.js';
 import { AuthContext } from '../../contexts';
 import axiosInstance from '../../API/axiosInstance.js';
 
@@ -10,35 +10,58 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [loginError, setLoginError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [passwordVisible, setPasswordVisible] = useState(false);  // Track visibility of the password
     const navigate = useNavigate();
     const { setUser, setIsLoggedIn } = useContext(AuthContext);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setLoginError('');
+        setSuccessMessage('');
         try {
+            // Call the login endpoint and expect lastLogin info in the response.
             const response = await axiosInstance.post(`${AUTH_URL}/login`, { username, password });
-            const token = response.data.token;
+            const { token, user, lastLogin } = response.data;
             localStorage.setItem('token', token);
+            setUser(user);
+            setIsLoggedIn(true);
 
-            setSuccessMessage('Login successful! Retrieving user information...');
+            // Construct a user-friendly message using last login details.
+            const lastSuccess = lastLogin.lastSuccessful
+                ? new Date(lastLogin.lastSuccessful).toLocaleString()
+                : 'N/A';
+            const lastFailed = lastLogin.lastFailed
+                ? new Date(lastLogin.lastFailed).toLocaleString()
+                : 'N/A';
+            setSuccessMessage(
+                <>
+                    Login successful!<br />
+                    Last successful login: {lastSuccess}.<br />
+                    Last failed login: {lastFailed}.
+                </>
+            );
 
-            try {
-                const loggedInUser = (await axiosInstance.get(`${USERS_URL}/me`)).data.data;
-                setUser(loggedInUser);
-                setIsLoggedIn(true);
-
-                setTimeout(() => {
-                    navigate('/');
-                }, 2000);
-            } catch (error) {
-                setLoginError('Failed to retrieve user information.');
-                setSuccessMessage('');
-                console.error('Error retrieving user info:', error);
-            }
+            setTimeout(() => {
+                navigate('/');
+            }, 2000);
         } catch (error) {
-            setLoginError('Login failed. Please check your credentials.');
-            setSuccessMessage('');
+            if (error.response?.status === 403) {
+                setLoginError('Your account is locked due to multiple failed login attempts. Please try again later.');
+            } else {
+                setLoginError('Login failed. Please check your credentials.');
+            }
             console.error('Error logging in:', error);
+        }
+        
+    };
+
+    const handlePasswordChange = (e) => {
+        const value = e.target.value;
+        setPassword(value);
+        
+        // If password field is empty, set visibility to false (Hide password)
+        if (value === '') {
+            setPasswordVisible(false);
         }
     };
 
@@ -60,13 +83,25 @@ const Login = () => {
                         </div>
                         <div className="login-input-group">
                             <label htmlFor="password">PASSWORD *</label>
-                            <input
-                                type="password"
-                                id="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
+                            <div className="password-input-wrapper">
+                                <input
+                                    type={passwordVisible ? 'text' : 'password'}
+                                    id="password"
+                                    value={password}
+                                    onChange={handlePasswordChange} // Updated to the new handler
+                                    required
+                                />
+                                {/* Only show the password toggle button when there's input */}
+                                {password.length > 0 && (
+                                    <button
+                                        type="button"
+                                        className="password-toggle-btn"
+                                        onClick={() => setPasswordVisible(!passwordVisible)}
+                                    >
+                                        {passwordVisible ? 'Hide' : 'Show'}
+                                    </button>
+                                )}
+                            </div>
                         </div>
                         <button type="submit" className="login-button">
                             LOG IN
