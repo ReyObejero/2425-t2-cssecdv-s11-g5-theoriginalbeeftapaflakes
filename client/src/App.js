@@ -17,6 +17,7 @@ import OrderManagement from './Components/Views/OrderManagement/OrderManagement_
 import CheckoutandStatus from './Components/Views/CheckoutandStatus/CS.jsx';
 import { AuthProvider } from './providers';
 import { Orders } from './Components/Orders/orders.jsx';
+import Error_Views from './Components/Views/Error/Error_Views.jsx';
 
 function App() {
     return (
@@ -39,6 +40,7 @@ function App() {
                         <Route path="/forgot-password" element={<ForgotPassword />} />
                         <Route path="/orders" element={<Orders />} />
                         <Route path="/COS" element={<CheckoutandStatus />} />
+                        <Route path="*" element={<Error_Views/>} />
                     </Routes>
                 </BrowserRouter>
             </div>
