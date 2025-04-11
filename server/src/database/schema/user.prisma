@@ -7,12 +7,17 @@ model User {
     profilePhotoUrl     String          @map("profile_photo_url")
     role                UserRole        @default(CUSTOMER)
     createdAt           DateTime        @default(now()) @map("created_at")
+    failedLoginAttempts Int             @default(0) @map("failed_login_attempts")
+    lockoutUntil        DateTime?       @map("lockout_until")
+    lastSuccessfulLogin DateTime?       @map("last_successful_login")
+    lastFailedLogin     DateTime?       @map("last_failed_login")
+    passwordChangedAt   DateTime?       @map("password_changed_at")
+    
     cart                Cart?
     orders              Order[]
     reviews             Review[]
     refreshTokens       RefreshToken[]
-    failedLoginAttempts Int             @default(0) @map("failed_login_attempts")
-    lockoutUntil        DateTime?       @map("lockout_until")
+    passwordHistories   PasswordHistory[]
 
     @@map("users")
 }
