@@ -48,7 +48,7 @@ function App() {
                             path="/createadmin"
                             element={<Protect element={<CreateAdmin />} requiredRole="ADMIN" />}
                         />
-                        <Route path="/forgot-password" element={<ForgotPassword />} />
+                        <Route path="/reset-password" element={<ForgotPassword />} />
                         <Route path="/COS" element={<CheckoutandStatus />} />
                         <Route path="*" element={<Error_Views />} />
                         <Route

@@ -1,17 +1,18 @@
 model User {
-    id                  Int             @id @default(autoincrement())
-    username            String          @unique
-    email               String          @unique
-    password            String
-    address             String?
-    profilePhotoUrl     String          @map("profile_photo_url")
-    role                UserRole        @default(CUSTOMER)
-    createdAt           DateTime        @default(now()) @map("created_at")
-    failedLoginAttempts Int             @default(0) @map("failed_login_attempts")
-    lockoutUntil        DateTime?       @map("lockout_until")
-    lastSuccessfulLogin DateTime?       @map("last_successful_login")
-    lastFailedLogin     DateTime?       @map("last_failed_login")
-    passwordChangedAt   DateTime?       @map("password_changed_at")
+    id                      Int             @id @default(autoincrement())
+    username                String          @unique
+    email                   String          @unique
+    password                String
+    address                 String?
+    profilePhotoUrl         String          @map("profile_photo_url")
+    role                    UserRole        @default(CUSTOMER)
+    createdAt               DateTime        @default(now()) @map("created_at")
+    failedLoginAttempts     Int             @default(0) @map("failed_login_attempts")
+    lockoutUntil            DateTime?       @map("lockout_until")
+    lastSuccessfulLogin     DateTime?       @map("last_successful_login")
+    lastFailedLogin         DateTime?       @map("last_failed_login")
+    passwordChangedAt       DateTime?       @map("password_changed_at")
+    securityQuestionAnswer  String       @map("security_question_answer")
     
     cart                Cart?
     orders              Order[]

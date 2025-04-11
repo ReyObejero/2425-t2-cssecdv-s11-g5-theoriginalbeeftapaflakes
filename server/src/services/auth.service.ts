@@ -17,31 +17,47 @@ interface RegisterInput {
     username: string;
     email: string;
     password: string;
+    securityAnswer: string;
 }
 
 export const authService = {
     register: async (input: RegisterInput, role?: UserRole): Promise<User> => {
-        const { username, email, password } = input;
+        const { username, email, password, securityAnswer } = input;
 
         const usernameTaken = await userService.getUserByUsername(username);
         const emailTaken = await userService.getUserByEmail(email);
 
-        if (!username || !email || !password || usernameTaken || emailTaken) {
+        if (!username || !email || !password || !securityAnswer || usernameTaken || emailTaken) {
             logger.warn('register: Registration failed.');
             throw createError(statusCodes.clientError.BAD_REQUEST, errorMessages.INVALID_INPUT);
         }
 
-        const user = await prismaClient.user.create({
-            data: {
-                username,
-                email,
-                password: await hash(password),
-                profilePhotoUrl: 'https://asset.cloudinary.com/dqfjotjba/387e2481f384f9748dd285b3d059c92c',
-                ...(role && role !== UserRole.CUSTOMER && { role }),
-            },
+        const hashedPassword = await hash(password);
+
+        const user = await prismaClient.$transaction(async (tx) => {
+            const createdUser = await tx.user.create({
+                data: {
+                    username,
+                    email,
+                    password: hashedPassword,
+                    securityQuestionAnswer: securityAnswer,
+                    profilePhotoUrl: 'https://asset.cloudinary.com/dqfjotjba/387e2481f384f9748dd285b3d059c92c',
+                    ...(role && role !== UserRole.CUSTOMER && { role }),
+                    passwordChangedAt: new Date(),
+                },
+            });
+
+            await tx.passwordHistory.create({
+                data: {
+                    userId: createdUser.id,
+                    hash: hashedPassword,
+                },
+            });
+
+            return createdUser;
         });
 
-        logger.info('register: User created.');
+        logger.info('register: User created and password history recorded.');
         return user;
     },
 

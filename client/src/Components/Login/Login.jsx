@@ -71,9 +71,9 @@ const Login = () => {
                         <button type="submit" className="login-button">
                             LOG IN
                         </button>
-                        <a href="/forgot-password" className="forgot-password">
+                        {/*<a href="/forgot-password" className="forgot-password">
                             Forgot password?
-                        </a>
+                        </a>*/}
                         {loginError && <p className="p-error-bubble">{loginError}</p>}
                         {successMessage && <p className="p-success-message">{successMessage}</p>}
                     </form>

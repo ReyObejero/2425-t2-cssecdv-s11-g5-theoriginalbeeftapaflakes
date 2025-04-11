@@ -7,7 +7,7 @@ const userRouter = Router();
 
 userRouter.get('/', userController.getUsers);
 userRouter.get('/me', authenticate, userController.getAuthenticatedUser);
-userRouter.get('/password-reset', authenticate, validate(resetPasswordSchema), userController.resetPassword);
+userRouter.post('/password-reset', authenticate, validate(resetPasswordSchema), userController.resetPassword);
 userRouter.put('/:username', authenticate, userController.updateUser);
 
 export { userRouter };

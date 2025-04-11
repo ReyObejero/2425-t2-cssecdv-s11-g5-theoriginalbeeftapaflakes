@@ -9,6 +9,8 @@ const Register = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [securityQuestion, setSecurityQuestion] = useState("What is your mother's maiden name?");
+    const [securityAnswer, setSecurityAnswer] = useState('');
 
     const [successMessage, setSuccessMessage] = useState('');
     const [registrationError, setRegistrationError] = useState('');
@@ -16,6 +18,7 @@ const Register = () => {
     const [errorUsername, setErrorUsername] = useState('');
     const [errorPassword, setErrorPassword] = useState('');
     const [errorConfirmPassword, setErrorConfirmPassword] = useState('');
+    const [errorSecurityAnswer, setErrorSecurityAnswer] = useState('');
 
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -28,7 +31,8 @@ const Register = () => {
     };
 
     const validatePassword = (password) => {
-        const passwordRegex = /^(?=[A-Za-z])(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=(?:.*[^A-Za-z0-9]){2,})(?!.*(.)\1\1).{15,}$/;
+        const passwordRegex =
+            /^(?=[A-Za-z])(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=(?:.*[^A-Za-z0-9]){2,})(?!.*(.)\1\1).{15,}$/;
         return passwordRegex.test(password);
     };
 
@@ -37,11 +41,7 @@ const Register = () => {
         const clean = username.trim();
 
         const usernameRegex = /^(?!.*[_.]{2})[A-Za-z0-9](?!.*[_.]{2})[A-Za-z0-9._]{1,28}[A-Za-z0-9]$/;
-        return (
-            usernameRegex.test(clean) &&
-            !reserved.includes(clean.toLowerCase()) &&
-            !/\s/.test(clean)
-        );
+        return usernameRegex.test(clean) && !reserved.includes(clean.toLowerCase()) && !/\s/.test(clean);
     };
 
     const handleSubmit = async (event) => {
@@ -51,6 +51,7 @@ const Register = () => {
         setErrorUsername('');
         setErrorPassword('');
         setErrorConfirmPassword('');
+        setErrorSecurityAnswer('');
         setRegistrationError('');
         setSuccessMessage('');
 
@@ -66,13 +67,13 @@ const Register = () => {
             valid = false;
         }
 
-        if (!validatePassword(password)) {
-            setErrorPassword('Invalid password');
+        if (password !== confirmPassword) {
+            setErrorConfirmPassword('Passwords do not match');
             valid = false;
         }
 
-        if (password !== confirmPassword) {
-            setErrorConfirmPassword('Passwords do not match');
+        if (!securityAnswer) {
+            setErrorSecurityAnswer('Please provide an answer to the security question');
             valid = false;
         }
 
@@ -83,6 +84,7 @@ const Register = () => {
                 email,
                 username,
                 password,
+                securityAnswer,
             });
 
             if (response.status === 201) {
@@ -91,6 +93,8 @@ const Register = () => {
                 setUsername('');
                 setPassword('');
                 setConfirmPassword('');
+                setSecurityQuestion("What is your mother's maiden name?");
+                setSecurityAnswer('');
                 setTimeout(() => navigate('/login'), 2000);
             }
         } catch (error) {
@@ -106,9 +110,7 @@ const Register = () => {
                 <form onSubmit={handleSubmit}>
                     {/* Success message block */}
                     {isSubmitted && successMessage && (
-                        <div className="success-message success-big-box">
-                            {successMessage}
-                        </div>
+                        <div className="success-message success-big-box">{successMessage}</div>
                     )}
 
                     {/* Email */}
@@ -122,9 +124,7 @@ const Register = () => {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                         />
-                        {isSubmitted && errorEmail && (
-                            <div className="error-message">{errorEmail}</div>
-                        )}
+                        {isSubmitted && errorEmail && <div className="error-message">{errorEmail}</div>}
                     </div>
 
                     {/* Username */}
@@ -138,9 +138,7 @@ const Register = () => {
                             onChange={(e) => setUsername(e.target.value)}
                             required
                         />
-                        {isSubmitted && errorUsername && (
-                            <div className="error-message">{errorUsername}</div>
-                        )}
+                        {isSubmitted && errorUsername && <div className="error-message">{errorUsername}</div>}
                     </div>
 
                     {/* Password */}
@@ -170,9 +168,6 @@ const Register = () => {
                                 </button>
                             )}
                         </div>
-                        {isSubmitted && errorPassword && (
-                            <div className="error-message">{errorPassword}</div>
-                        )}
                     </div>
 
                     {/* Confirm Password */}
@@ -221,13 +216,36 @@ const Register = () => {
                         </ul>
                     </div>
 
-                    {/* Spacer */}
-                    <div style={{ marginBottom: '20px' }}></div>
+                    {/* Security Question */}
+                    <div className="register-input-group">
+                        <label htmlFor="securityQuestion">Security Question *</label>
+                        <input
+                            type="text"
+                            className="register-input-field"
+                            id="securityQuestion"
+                            value="What is your mother's maiden name?"
+                            readOnly
+                        />
+                    </div>
+
+                    {/* Security Answer */}
+                    <div className="register-input-group">
+                        <label htmlFor="securityAnswer">Answer *</label>
+                        <input
+                            type="text"
+                            className="register-input-field"
+                            id="securityAnswer"
+                            value={securityAnswer}
+                            onChange={(e) => setSecurityAnswer(e.target.value)}
+                            required
+                        />
+                        {isSubmitted && errorSecurityAnswer && (
+                            <div className="error-message">{errorSecurityAnswer}</div>
+                        )}
+                    </div>
 
                     {/* Error message below policy box if general registration error */}
-                    {isSubmitted && registrationError && (
-                        <div className="error-message">{registrationError}</div>
-                    )}
+                    {isSubmitted && registrationError && <div className="error-message">{registrationError}</div>}
 
                     {/* Submit Button */}
                     <div className="submit-button-wrapper">

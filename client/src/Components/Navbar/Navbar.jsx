@@ -121,6 +121,10 @@ const Navbar = () => {
                             Admin Logs
                         </li>
                     )}
+
+                    <li className="nav-item" onClick={() => redirectTo('/reset-password')}>
+                        Security
+                    </li>
                 </ul>
 
                 <div className="nav-login-cart">

@@ -25,10 +25,10 @@ export const userController = {
     }),
 
     resetPassword: asyncRequestHandlerWrapper(async (req: Request, res: Response): Promise<void> => {
-        const { newPassword } = req.body;
+        const { newPassword, securityAnswer } = req.body;
         const userId = req!.jwtPayload!.userId;
 
-        const user = await userService.resetPassword(userId, newPassword);
+        const user = await userService.resetPassword(userId, newPassword, securityAnswer);
 
         return sendResponse(res, statusCodes.successful.OK, {
             data: user,
