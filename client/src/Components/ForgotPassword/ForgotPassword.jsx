@@ -2,36 +2,35 @@ import React, { useState } from 'react';
 import './ForgotPassword.css';
 import axiosInstance from '../../API/axiosInstance';
 import { AUTH_URL, USERS_URL } from '../../API/constants';
+import { useNavigate } from 'react-router-dom'; // Import navigation
 
 const ForgotPassword = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [securityAnswer, setSecurityAnswer] = useState('');
     const [newPassword, setNewPassword] = useState('');
-    const [isReauthenticated, setIsReauthenticated] = useState(false); // Track reauthentication status
-    const [error, setError] = useState(''); // For handling error messages
-    const [successMessage, setSuccessMessage] = useState(''); // Success message for password reset
+    const [isReauthenticated, setIsReauthenticated] = useState(false);
+    const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+    const navigate = useNavigate(); // Initialize navigation
 
-    // Function to handle reauthentication
     const handleReauthenticate = async (e) => {
         e.preventDefault();
         try {
-            // Make the API call to reauthenticate with the backend
             const response = await axiosInstance.post(`${AUTH_URL}/login`, {
                 username,
                 password,
             });
 
             if (response.status === 201) {
-                setIsReauthenticated(true); // Show reset form if reauthentication is successful
+                setIsReauthenticated(true);
             }
         } catch (err) {
-            setError('Invalid username or password.'); // Handle reauthentication error
+            setError('Invalid username or password.');
             console.error('Reauthentication failed:', err);
         }
     };
 
-    // Handle password reset form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -45,6 +44,9 @@ const ForgotPassword = () => {
 
             if (response.status === 200) {
                 setSuccessMessage('Password has been reset successfully!');
+                setTimeout(() => {
+                    navigate('/'); // Redirect after 1 second
+                }, 1000);
             }
         } catch (err) {
             const status = err?.response?.status;
@@ -57,7 +59,7 @@ const ForgotPassword = () => {
             } else if (status === 403 && message?.includes('reuse')) {
                 setError('You cannot reuse a previous password. Please choose a new one.');
             } else if (status === 401) {
-                setError('Security answer is incorrect.');
+                setError('Failed to reset password. Please try again.');
             } else {
                 setError('Failed to reset password. Please try again.');
             }
@@ -70,7 +72,6 @@ const ForgotPassword = () => {
         <div className="forgot-password-container">
             <div className="forgot-container">
                 {!isReauthenticated ? (
-                    // Reauthentication form
                     <div>
                         <p className="instruction-text">
                             Please re-authenticate with your username and password before resetting your password.
@@ -109,7 +110,6 @@ const ForgotPassword = () => {
                         </form>
                     </div>
                 ) : (
-                    // Password reset form after reauthentication
                     <div>
                         <h4>Password Requirements:</h4>
                         <ul>
@@ -123,7 +123,7 @@ const ForgotPassword = () => {
                             <li>Must not have reset your password too recently.</li>
                             <li>Must not be a password you have already previously set.</li>
                         </ul>
-                        <br></br>
+                        <br />
                         <p className="instruction-text">
                             Please answer the security question: "What is your mother's maiden name?" and enter your new
                             password.

@@ -3,8 +3,9 @@ import { hash, verify } from 'argon2';
 import createError from 'http-errors';
 import { errorMessages, statusCodes } from '@/constants';
 import { prismaClient } from '@/database';
-import { isBefore, subDays } from 'date-fns';
 import { logger } from '@/config';
+
+const PASSWORD_RESET_TIMEOUT_SECONDS = 86400;
 
 export const userService = {
     getUserByEmail: async (email: string): Promise<User | null> => {
@@ -55,9 +56,22 @@ export const userService = {
             throw createError(statusCodes.clientError.UNAUTHORIZED, 'Security answer is incorrect.');
         }
 
-        const passwordChangedAt = user.passwordChangedAt;
-        if (passwordChangedAt && isBefore(new Date(), subDays(passwordChangedAt, -1))) {
-            throw createError(statusCodes.clientError.FORBIDDEN, 'Password reset too frequent.');
+        const currentTime = new Date();
+        const passwordResetTimeout = PASSWORD_RESET_TIMEOUT_SECONDS * 1000;
+
+        if (user.passwordChangedAt) {
+            const timeDifference = currentTime.getTime() - user.passwordChangedAt.getTime();
+            if (timeDifference < passwordResetTimeout) {
+                throw createError(statusCodes.clientError.FORBIDDEN, 'Password reset too frequent.');
+            }
+        }
+
+        const currentPasswordMatches = await verify(user.password, newPassword);
+        if (currentPasswordMatches) {
+            throw createError(
+                statusCodes.clientError.FORBIDDEN,
+                'New password cannot be the same as the current password.',
+            );
         }
 
         for (const past of user.passwordHistories) {
@@ -67,23 +81,20 @@ export const userService = {
             }
         }
 
-        const hashedPassword = await hash(newPassword);
+        const hashedNewPassword = await hash(newPassword);
+        await prismaClient.passwordHistory.create({
+            data: {
+                userId: user.id,
+                hash: user.password,
+            },
+        });
 
-        const updatedUser = await prismaClient.$transaction(async (tx) => {
-            await tx.passwordHistory.create({
-                data: {
-                    userId: user.id,
-                    hash: user.password,
-                },
-            });
-
-            return await tx.user.update({
-                where: { id: user.id },
-                data: {
-                    password: hashedPassword,
-                    passwordChangedAt: new Date(),
-                },
-            });
+        const updatedUser = await prismaClient.user.update({
+            where: { id: user.id },
+            data: {
+                password: hashedNewPassword,
+                passwordChangedAt: currentTime,
+            },
         });
 
         logger.info(`resetPassword: Password reset successful for user ID ${user.id}.`);
