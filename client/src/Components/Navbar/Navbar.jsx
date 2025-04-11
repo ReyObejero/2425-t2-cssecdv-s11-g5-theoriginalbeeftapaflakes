@@ -57,6 +57,10 @@ const Navbar = () => {
     const handleLogout = async () => {
         try {
             await axiosInstance.delete(`${AUTH_URL}/logout`, { withCredentials: true });
+
+            // ✅ Clear localStorage token
+            localStorage.removeItem('token');
+
             setUser(null);
             setIsLoggedIn(false);
             redirectTo('/login');
