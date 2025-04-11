@@ -7,3 +7,4 @@ export * from './review.service';
 export * from './static-page.service';
 export * from './token.service';
 export * from './user.service';
+export * from './log.service';

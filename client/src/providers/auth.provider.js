@@ -6,6 +6,7 @@ import { AuthContext } from '../contexts';
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -15,11 +16,18 @@ export const AuthProvider = ({ children }) => {
                 setIsLoggedIn(true);
             } catch (error) {
                 console.log(error);
+                setIsLoggedIn(false);
+            } finally {
+                setIsLoading(false);
             }
         };
 
         checkAuth();
     }, []);
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
 
     return <AuthContext.Provider value={{ user, setUser, isLoggedIn, setIsLoggedIn }}>{children}</AuthContext.Provider>;
 };
